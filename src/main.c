@@ -27,6 +27,10 @@ char* setString(char* string){
     return newString;
 }//end func
 
+void option1(){
+
+}//end func
+
 int main(int argc, char** argv){
     //dec vars
     char* menu = calloc(256, sizeof(char)*256);
@@ -40,6 +44,7 @@ int main(int argc, char** argv){
         printf("4: Divide and conquer convexhull\n");
         printf("5: Compare execution times of 1 and 2\n");
         printf("6: Compare execution times of 3 and 4\n");
+        printf("Enter the menu:\n");
         menu = userInput(menu);
 
         if(strcmp(menu, "1") == 0){
