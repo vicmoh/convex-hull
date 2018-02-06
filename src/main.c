@@ -13,6 +13,11 @@
 #define DEBUG true
 #define debug if(DEBUG)printf
 
+//struct to act as instance vars
+typedef helperVars{
+    
+}Vars;
+
 char* userInput(char* input){
     //ask for user input
     fgets(input, 100, stdin);
@@ -27,8 +32,9 @@ char* setString(char* string){
     return newString;
 }//end func
 
-void option1(){
-
+void option1(Vars vars){
+    //brute force
+    
 }//end func
 
 int main(int argc, char** argv){
