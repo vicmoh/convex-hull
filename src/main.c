@@ -20,18 +20,15 @@
 #define debug if(DEBUG)printf
 
 typedef struct instanceVars{
-    int timeResult;
+    double timeResult;
     int totalInversion;
-    
     char fileName[99];
     int* array1;
     double* array2;
     int arraySize1;
     int arraySize2;
-    // int timerWhich;
-    // struct itimerval timerValue;
-    // struct itimerval timerOValue;
-    // struct itimerval timerPValue;
+    struct timeval stop;
+    struct timeval start;
 }Instance;
 
 Instance initInstance(){
@@ -40,7 +37,6 @@ Instance initInstance(){
     newVars.totalInversion = 0;
     newVars.arraySize1 = 0;
     newVars.arraySize2 = 0;
-    // newVars.timerWhich = ITIMER_REAL;
     return newVars;
 }//end constructor
 
@@ -61,28 +57,25 @@ char* setString(char* string){
 void countInversion(int array[], int arraySize, Instance* vars){
     //dec vars
     int inversionCount = 0;
-    // time_t currentTime = 0;
-    // getitimer(vars->timerWhich, &vars->timerPValue);
+    double start = 0;
+    double stop = 0;
     //loop the first comparison index
-    clock_t begin = clock();
+    start = clock();
     for(int x=0; x < arraySize; x++){
         //loop the second comparison index
         for(int i=x+1; i < arraySize; i++){
             //check for inversion when comparing
             if(array[x] > array[i]){
-                //time(&currentTime);
-                //debug("debug timer currentTime: %s\n", ctime(&currentTime));
                 inversionCount++;
             }//end if
         }//end for
     }//end for
-    clock_t end = clock();
-    double timeSpent = (double)(end - begin) / CLOCKS_PER_SEC;
+    stop = clock();
+    double timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
     vars->totalInversion = inversionCount;
     vars->timeResult = timeSpent;
-    // vars->timeResult = setitimer(vars->timerWhich, &vars->timerValue, &vars->timerOValue);
-    debug("debug totalInversion: %d\n", inversionCount);
-    debug("debug timeResult: %d\n", vars->timeResult);
+    // debug("debug totalInversion: %d\n", inversionCount);
+    // debug("debug timeResult: %d\n", vars->timeResult);
 }//end func
 
 void loadData1(Instance* vars){
@@ -93,7 +86,7 @@ void loadData1(Instance* vars){
     int* array = calloc(1, sizeof(array)*memSize);
     int arrayIndex = 0;
     //loop until the end of file
-    printf("Loading data...\n");
+    printf("Loading data 1...\n");
     while(fgets(line, sizeof(line), filePointer) != NULL){
         line[strcspn(line, "\r\n")] = '\0';
         //debug("%s\n", line);
@@ -109,7 +102,7 @@ void loadData1(Instance* vars){
         array = realloc(array, sizeof(array)*(memSize));
     }//end while
     fclose(filePointer);
-    printf("Data loaded...\n");
+    printf("Data 1 loaded\n");
     vars->arraySize1 = arrayIndex;
     vars->array1 = array;
 }//end func
@@ -122,7 +115,7 @@ void loadData2(Instance* vars){
     double* array = calloc(1, sizeof(array)*memSize);
     int arrayIndex = 0;
     //loop until the end of file
-    printf("Loading data...\n");
+    printf("Loading data 2...\n");
     while(fgets(line, sizeof(line), filePointer) != NULL){
         line[strcspn(line, "\r\n")] = '\0';
         //debug("%s\n", line);
@@ -138,7 +131,7 @@ void loadData2(Instance* vars){
         array = realloc(array, sizeof(array)*(memSize));
     }//end while
     fclose(filePointer);
-    printf("Data loaded...\n");
+    printf("Data 2 loaded\n");
     vars->arraySize2 = arrayIndex;
     vars->array2 = array;
 }//end func
@@ -167,11 +160,13 @@ int main(int argc, char** argv){
 
         if(strcmp(menu, "1") == 0){
             //brute force
+            printf("Calculating...\n");
             countInversion(vars.array1, vars.arraySize1, &vars);
             printf("Total inversion: %d\n", vars.totalInversion);
-            printf("Total time: %d\n", vars.timeResult);
+            printf("Total execution time: %f seconds\n", vars.timeResult);
         }else if(strcmp(menu, "2") == 0){
             //devide and conquer
+            
         }else if(strcmp(menu, "3") == 0){
             //brute forces convex hull
         }else if(strcmp(menu, "4") == 0){
@@ -183,11 +178,11 @@ int main(int argc, char** argv){
         }else if(strcmp(menu, "7") == 0){
             //exit
             free(vars.array1);
+            free(vars.array2);
             free(menu);
             exit(0);
         }else{
             printf("Invalid input, please re-enter.\n");
         }//end if
     }//end while
-
 }//end main
