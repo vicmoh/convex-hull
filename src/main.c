@@ -32,10 +32,16 @@ char* setString(char* string){
     return newString;
 }//end func
 
-int countInversion(int array[], int n){
+int countInversion(int array[], int arraySize){
     int inversionCount = 0;
-    
-}
+    //loop the first comparison index
+    for(int x=0; x < arraySize; x++){
+        //loop the second comparison index
+        for(int i=x+1; i < arraySize; i++){
+            
+        }//end for
+    }//end for
+}//end func
 
 int main(int argc, char** argv){
     //dec vars
