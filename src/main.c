@@ -15,8 +15,14 @@
 
 //struct to act as instance vars
 typedef struct instanceVars{
-    
+    int timeResult;
 }Instance;
+
+Instance initInstance(){
+    Instance newVars;
+    newVars.timeResult = 0;
+    return newVars;
+}//end constructor
 
 char* userInput(char* input){
     //ask for user input
@@ -38,9 +44,13 @@ int countInversion(int array[], int arraySize){
     for(int x=0; x < arraySize; x++){
         //loop the second comparison index
         for(int i=x+1; i < arraySize; i++){
-            
+            //check for inversion when comparing
+            if(array[x] > array[i]){
+                inversionCount++;
+            }//end if
         }//end for
     }//end for
+    return inversionCount;
 }//end func
 
 int main(int argc, char** argv){
