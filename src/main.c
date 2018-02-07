@@ -22,15 +22,16 @@
 typedef struct instanceVars{
     int timeResult;
     int totalInversion;
-    int timerWhich;
+    
     char fileName[99];
     int* array1;
     double* array2;
     int arraySize1;
     int arraySize2;
-    struct itimerval timerValue;
-    struct itimerval timerOValue;
-    struct itimerval timerPValue;
+    // int timerWhich;
+    // struct itimerval timerValue;
+    // struct itimerval timerOValue;
+    // struct itimerval timerPValue;
 }Instance;
 
 Instance initInstance(){
@@ -39,7 +40,7 @@ Instance initInstance(){
     newVars.totalInversion = 0;
     newVars.arraySize1 = 0;
     newVars.arraySize2 = 0;
-    newVars.timerWhich = ITIMER_REAL;
+    // newVars.timerWhich = ITIMER_REAL;
     return newVars;
 }//end constructor
 
@@ -60,23 +61,28 @@ char* setString(char* string){
 void countInversion(int array[], int arraySize, Instance* vars){
     //dec vars
     int inversionCount = 0;
-    time_t currentTime = 0;
-    getitimer(vars->timerWhich, &vars->timerPValue);
+    // time_t currentTime = 0;
+    // getitimer(vars->timerWhich, &vars->timerPValue);
     //loop the first comparison index
+    clock_t begin = clock();
     for(int x=0; x < arraySize; x++){
         //loop the second comparison index
         for(int i=x+1; i < arraySize; i++){
             //check for inversion when comparing
             if(array[x] > array[i]){
                 time(&currentTime);
-                debug("debug timer currentTime: %s\n", ctime(&currentTime));
+                //debug("debug timer currentTime: %s\n", ctime(&currentTime));
                 inversionCount++;
             }//end if
         }//end for
     }//end for
-    debug("debug totalInversion: %d\n", inversionCount);
+    clock_t end = clock();
+    double timeSpent = (double)(end - begin) / CLOCKS_PER_SEC;
     vars->totalInversion = inversionCount;
-    vars->timeResult = setitimer(vars->timerWhich, &vars->timerValue, &vars->timerOValue);
+    vars->timeResult = timeSpent;
+    // vars->timeResult = setitimer(vars->timerWhich, &vars->timerValue, &vars->timerOValue);
+    debug("debug totalInversion: %d\n", inversionCount);
+    debug("debug timeResult: %d\n", vars->timeResult);
 }//end func
 
 void loadData1(Instance* vars){
@@ -90,7 +96,7 @@ void loadData1(Instance* vars){
     printf("Loading data...\n");
     while(fgets(line, sizeof(line), filePointer) != NULL){
         line[strcspn(line, "\r\n")] = '\0';
-        debug("%s\n", line);
+        //debug("%s\n", line);
         //take line and put it to the array
         for(int x = 0; x < 5; x++){
             char temp[99] = {"\0"};
@@ -119,7 +125,7 @@ void loadData2(Instance* vars){
     printf("Loading data...\n");
     while(fgets(line, sizeof(line), filePointer) != NULL){
         line[strcspn(line, "\r\n")] = '\0';
-        debug("%s\n", line);
+        //debug("%s\n", line);
         //take line and put it to the array
         for(int x = 0; x < 2; x++){
             char temp[99] = {"\0"};
@@ -161,6 +167,7 @@ int main(int argc, char** argv){
 
         if(strcmp(menu, "1") == 0){
             //brute force
+            countInversion(vars.array1, vars.arraySize1, &vars);
             
         }else if(strcmp(menu, "2") == 0){
             //devide and conquer
