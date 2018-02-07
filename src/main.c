@@ -70,7 +70,7 @@ void countInversion(int array[], int arraySize, Instance* vars){
         for(int i=x+1; i < arraySize; i++){
             //check for inversion when comparing
             if(array[x] > array[i]){
-                time(&currentTime);
+                //time(&currentTime);
                 //debug("debug timer currentTime: %s\n", ctime(&currentTime));
                 inversionCount++;
             }//end if
@@ -168,7 +168,8 @@ int main(int argc, char** argv){
         if(strcmp(menu, "1") == 0){
             //brute force
             countInversion(vars.array1, vars.arraySize1, &vars);
-            
+            printf("Total inversion: %d\n", vars.totalInversion);
+            printf("Total time: %d\n", vars.timeResult);
         }else if(strcmp(menu, "2") == 0){
             //devide and conquer
         }else if(strcmp(menu, "3") == 0){
