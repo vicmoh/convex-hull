@@ -25,7 +25,7 @@ typedef struct instanceVars{
     int timerWhich;
     char fileName[99];
     int* array1;
-    int* array2;
+    double* array2;
     int arraySize1;
     int arraySize2;
     struct itimerval timerValue;
@@ -108,13 +108,43 @@ void loadData1(Instance* vars){
     vars->array1 = array;
 }//end func
 
+void loadData2(Instance* vars){
+    //dec vars
+    char line[256] = {"\0"};
+    FILE* filePointer = fopen("./assets/data_2_a2.txt", "r");
+    int memSize = 2;
+    double* array = calloc(1, sizeof(array)*memSize);
+    int arrayIndex = 0;
+    //loop until the end of file
+    printf("Loading data...\n");
+    while(fgets(line, sizeof(line), filePointer) != NULL){
+        line[strcspn(line, "\r\n")] = '\0';
+        debug("%s\n", line);
+        //take line and put it to the array
+        for(int x = 0; x < 2; x++){
+            char temp[99] = {"\0"};
+            sprintf(temp, "%s", line);
+            array[arrayIndex] = atof(temp);
+            arrayIndex++;
+        }//end for
+        //create more memory
+        memSize += 2;
+        array = realloc(array, sizeof(array)*(memSize));
+    }//end while
+    fclose(filePointer);
+    printf("Data loaded...\n");
+    vars->arraySize2 = arrayIndex;
+    vars->array2 = array;
+}//end func
+
 int main(int argc, char** argv){
     //dec vars
     char* menu = calloc(256, sizeof(char)*256);
     Instance vars = initInstance();
 
-    //load data 1
+    //load data 1 and 2
     loadData1(&vars);
+    loadData2(&vars);
     
     //infinite loop until user exits 
     while(1){
@@ -131,6 +161,7 @@ int main(int argc, char** argv){
 
         if(strcmp(menu, "1") == 0){
             //brute force
+            
         }else if(strcmp(menu, "2") == 0){
             //devide and conquer
         }else if(strcmp(menu, "3") == 0){
