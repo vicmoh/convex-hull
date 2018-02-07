@@ -14,9 +14,9 @@
 #define debug if(DEBUG)printf
 
 //struct to act as instance vars
-typedef helperVars{
+typedef struct instanceVars{
     
-}Vars;
+}Instance;
 
 char* userInput(char* input){
     //ask for user input
@@ -32,10 +32,10 @@ char* setString(char* string){
     return newString;
 }//end func
 
-void option1(Vars vars){
-    //brute force
+int countInversion(int array[], int n){
+    int inversionCount = 0;
     
-}//end func
+}
 
 int main(int argc, char** argv){
     //dec vars
