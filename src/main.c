@@ -99,9 +99,11 @@ void loadData1(Instance* vars){
             arrayIndex++;
         }//end for
         //create more memory
-        array = realloc(array, sizeof(array)*(memSize+5));
+        memSize += 5; 
+        array = realloc(array, sizeof(array)*(memSize));
     }//end while
     printf("Data loaded...\n");
+    vars->arraySize1 = arrayIndex;
     vars->array1 = array;
 }//end func
 
@@ -114,7 +116,7 @@ int main(int argc, char** argv){
     loadData1(&vars);
     
     //infinite loop until user exits 
-    while(true){
+    while(1){
         //ask the user for the menu
         printf("1: Brute force inversion\n");
         printf("2: Divide and conquer inversion\n");
@@ -139,6 +141,7 @@ int main(int argc, char** argv){
             //compare execution times of 3 and 4
         }else if(strcmp(menu, "7") == 0){
             //exit
+            free(vars.array1);
             free(menu);
             exit(0);
         }else{
