@@ -1,3 +1,8 @@
+/***********************************
+ * Vicky Mohammad
+ * 0895381
+ ***********************************/
+
 /*import libraries*/
 #include <stdio.h>
 #include <string.h>
@@ -9,15 +14,20 @@
 #include <malloc.h>
 #include <math.h>
 #include <sys/time.h>
-
+#include <time.h>
+//macros
 #define DEBUG true
 #define debug if(DEBUG)printf
 
-//struct to act as instance vars
 typedef struct instanceVars{
     int timeResult;
     int totalInversion;
     int timerWhich;
+    char fileName[99];
+    int* array1;
+    int* array2;
+    int arraySize1;
+    int arraySize2;
     struct itimerval timerValue;
     struct itimerval timerOValue;
     struct itimerval timerPValue;
@@ -27,6 +37,8 @@ Instance initInstance(){
     Instance newVars;
     newVars.timeResult = 0;
     newVars.totalInversion = 0;
+    newVars.arraySize1 = 0;
+    newVars.arraySize2 = 0;
     newVars.timerWhich = ITIMER_REAL;
     return newVars;
 }//end constructor
@@ -56,6 +68,8 @@ void countInversion(int array[], int arraySize, Instance* vars){
         for(int i=x+1; i < arraySize; i++){
             //check for inversion when comparing
             if(array[x] > array[i]){
+                time(&currentTime);
+                debug("debug timer currentTime: %s\n", ctime(&currentTime));
                 inversionCount++;
             }//end if
         }//end for
@@ -65,10 +79,39 @@ void countInversion(int array[], int arraySize, Instance* vars){
     vars->timeResult = setitimer(vars->timerWhich, &vars->timerValue, &vars->timerOValue);
 }//end func
 
+void loadData1(Instance* vars){
+    //dec vars
+    char line[256] = {"\0"};
+    FILE* filePointer = fopen("./assets/data_1_a2.txt", "r");
+    int memSize = 5;
+    int* array = calloc(1, sizeof(array)*memSize);
+    int arrayIndex = 0;
+    //loop until the end of file
+    printf("Loading data...\n");
+    while(fgets(line, sizeof(line), filePointer) != NULL){
+        line[strcspn(line, "\r\n")] = '\0';
+        debug("%s\n", line);
+        //take line and put it to the array
+        for(int x = 0; x < 5; x++){
+            char temp[99] = {"\0"};
+            sprintf(temp, "%s", line);
+            array[arrayIndex] = atoi(temp);
+            arrayIndex++;
+        }//end for
+        //create more memory
+        array = realloc(array, sizeof(array)*(memSize+5));
+    }//end while
+    printf("Data loaded...\n");
+    vars->array1 = array;
+}//end func
+
 int main(int argc, char** argv){
     //dec vars
     char* menu = calloc(256, sizeof(char)*256);
     Instance vars = initInstance();
+
+    //load data 1
+    loadData1(&vars);
     
     //infinite loop until user exits 
     while(true){
