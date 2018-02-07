@@ -16,11 +16,18 @@
 //struct to act as instance vars
 typedef struct instanceVars{
     int timeResult;
+    int totalInversion;
+    int timerWhich;
+    struct itimerval timerValue;
+    struct itimerval timerOValue;
+    struct itimerval timerPValue;
 }Instance;
 
 Instance initInstance(){
     Instance newVars;
     newVars.timeResult = 0;
+    newVars.totalInversion = 0;
+    newVars.timerWhich = ITIMER_REAL;
     return newVars;
 }//end constructor
 
@@ -38,8 +45,11 @@ char* setString(char* string){
     return newString;
 }//end func
 
-int countInversion(int array[], int arraySize){
+void countInversion(int array[], int arraySize, Instance* vars){
+    //dec vars
     int inversionCount = 0;
+    time_t currentTime = 0;
+    getitimer(vars->timerWhich, &vars->timerPValue);
     //loop the first comparison index
     for(int x=0; x < arraySize; x++){
         //loop the second comparison index
@@ -50,12 +60,15 @@ int countInversion(int array[], int arraySize){
             }//end if
         }//end for
     }//end for
-    return inversionCount;
+    debug("debug totalInversion: %d\n", inversionCount);
+    vars->totalInversion = inversionCount;
+    vars->timeResult = setitimer(vars->timerWhich, &vars->timerValue, &vars->timerOValue);
 }//end func
 
 int main(int argc, char** argv){
     //dec vars
     char* menu = calloc(256, sizeof(char)*256);
+    Instance vars = initInstance();
     
     //infinite loop until user exits 
     while(true){
