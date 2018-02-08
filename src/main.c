@@ -137,6 +137,58 @@ void loadData2(Instance* vars){
     vars->array2 = array;
 }//end func
 
+int merge(int array[], int tempArray[], int left, int middle, int right){
+    //dec a tempArray vars
+    int inversionCount = 0;
+    int rightIndex = left;
+    int leftIndex = left;//for teh left and right array index section
+    int middleIndex = middle;//for the right array index section 
+    //combined the two sections
+    while ((leftIndex <= middle - 1) && (middleIndex <= right)){
+        if (array[leftIndex] <= array[middleIndex]){
+            //iterate to the next index
+            rightIndex = rightIndex + 1;
+            leftIndex = leftIndex + 1;
+            //added it to the temp array
+            tempArray[rightIndex] = array[leftIndex];
+        }else{
+            //iterate to the next index
+            rightIndex = rightIndex + 1;
+            leftIndex = leftIndex + 1;
+            //added to the temp array
+            tempArray[rightIndex] = array[middleIndex];
+            inversionCount += (middle - leftIndex);
+        }//end if
+    }//end while
+
+    //copy the left section of the remaining element of the arrayay
+    while(leftIndex <= middle - 1){
+        //iterate to the next index
+        rightIndex = rightIndex + 1;
+        leftIndex = leftIndex + 1;
+        //added to the temp array
+        tempArray[rightIndex] = array[leftIndex];
+    }//end while
+
+    //copy again, but this time do to the right
+    while(middleIndex <= right){
+        //iterate to the next index
+        rightIndex = rightIndex + 1;
+        leftIndex = leftIndex + 1;
+        //added to the temp array
+        tempArray[rightIndex] = array[middleIndex];
+    }//end while
+
+    //copy to the originated array
+    for(leftIndex=left; leftIndex <= right; leftIndex++){
+        array[leftIndex] = tempArray[leftIndex];
+    }//end for
+
+    //return the inversion count
+    //free(tempArray);
+    return inversionCount;
+}//end func
+
 int recurseMergeSort(int array[], int tempArray[], int left, int right){
     //a recursion function that sorts using merge sort
     int middle = 0;
@@ -147,66 +199,15 @@ int recurseMergeSort(int array[], int tempArray[], int left, int right){
         //sum the inversion for left and right sections
         inversionCount  = recurseMergeSort(array, tempArray, left, middle);
         inversionCount = inversionCount + recurseMergeSort(array, tempArray, middle+1, right);
-        
-        //dec a tempArray vars
-        int rightIndex;
-        int leftIndex = rightIndex = left;//for teh left and right array index section
-        int middleIndex = middle + 1;//for the right array index section 
-        //combined the two sections
-        while ((leftIndex <= middle - 1) && (middleIndex <= right)){
-            if (array[leftIndex] <= array[middleIndex]){
-                //iterate to the next index
-                rightIndex = rightIndex + 1;
-                leftIndex = leftIndex + 1;
-                //added it to the temp array
-                tempArray[rightIndex] = array[leftIndex];
-            }else{
-                //iterate to the next index
-                rightIndex = rightIndex + 1;
-                leftIndex = leftIndex + 1;
-                //added to the temp array
-                tempArray[rightIndex] = array[middleIndex];
-                inversionCount += (middle - leftIndex);
-            }//end if
-        }//end while
-
-        //copy the left section of the remaining element of the arrayay
-        while(leftIndex <= middle - 1){
-            //iterate to the next index
-            rightIndex = rightIndex + 1;
-            leftIndex = leftIndex + 1;
-            //added to the temp array
-            tempArray[rightIndex] = array[leftIndex];
-        }//end while
-
-        //copy again, but this time do to the right
-        while(middleIndex <= right){
-            //iterate to the next index
-            rightIndex = rightIndex + 1;
-            leftIndex = leftIndex + 1;
-            //added to the temp array
-            tempArray[rightIndex] = array[middleIndex];
-        }//end while
-
-        //copy to the originated arrayay
-        for(leftIndex=left; leftIndex <= right; leftIndex++){
-            array[leftIndex] = tempArray[leftIndex];
-        }//end for
-
-        //return the inversion count
-        //free(tempArray);
-        return inversionCount;
+        inversionCount = inversionCount + merge(array, tempArray, left, middle+1, right);
     }//end if
-
-    //return the inversion count
-    //free(tempArray);
     return inversionCount;
 }//end func
 
 int mergeSort(int array[], int arraySize){
     //this function sort the input using divide conquer
-    //int* tempArray = malloc(sizeof(int)*arraySize);
-    int tempArray[arraySize+999];
+    int* tempArray = malloc(sizeof(int)*arraySize);
+    //int tempArray[arraySize];
     return recurseMergeSort(array, tempArray, 0, arraySize - 1);
 }//end func
 
