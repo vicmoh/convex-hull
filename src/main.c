@@ -69,60 +69,34 @@ int countInversion(int array[], int arraySize){
 
 void loadData1(Instance* vars){
     //dec vars
-    char line[256] = {"\0"};
+    const int arraySize = 50000;
+    int* array = malloc(sizeof(int)*arraySize);
     FILE* filePointer = fopen("./assets/data_1_a2.txt", "r");
-    int memSize = 5;
-    int* array = calloc(1, sizeof(array)*memSize);
-    int arrayIndex = 0;
     //loop until the end of file
     printf("Loading data 1...\n");
-    while(fgets(line, sizeof(line), filePointer) != NULL){
-        line[strcspn(line, "\r\n")] = '\0';
-        //debug("%s\n", line);
-        //take line and put it to the array
-        for(int x = 0; x < 5; x++){
-            char temp[99] = {"\0"};
-            sprintf(temp, "%s", line);
-            array[arrayIndex] = atoi(temp);
-            arrayIndex++;
-        }//end for
-        //create more memory
-        memSize += 5;
-        array = realloc(array, sizeof(array)*(memSize));
-    }//end while
+    for(int x=0; x<arraySize; x++){
+        fscanf(filePointer, "%d", &array[x]);
+    }//end for
     fclose(filePointer);
     printf("Data 1 loaded\n");
-    vars->arraySize1 = arrayIndex;
     vars->array1 = array;
+    vars->arraySize1 = arraySize;
 }//end func
 
 void loadData2(Instance* vars){
     //dec vars
-    char line[256] = {"\0"};
-    FILE* filePointer = fopen("./assets/data_2_a2.txt", "r");
-    int memSize = 2;
-    double* array = calloc(1, sizeof(array)*memSize);
-    int arrayIndex = 0;
+    const int arraySize = 50000;
+    int* array = malloc(sizeof(int)*arraySize);
+    FILE* filePointer = fopen("./assets/data_1_a2.txt", "r");
     //loop until the end of file
-    printf("Loading data 2...\n");
-    while(fgets(line, sizeof(line), filePointer) != NULL){
-        line[strcspn(line, "\r\n")] = '\0';
-        //debug("%s\n", line);
-        //take line and put it to the array
-        for(int x = 0; x < 2; x++){
-            char temp[99] = {"\0"};
-            sprintf(temp, "%s", line);
-            array[arrayIndex] = atof(temp);
-            arrayIndex++;
-        }//end for
-        //create more memory
-        memSize += 2;
-        array = realloc(array, sizeof(array)*(memSize));
-    }//end while
+    printf("Loading data 1...\n");
+    for(int x=0; x<arraySize; x++){
+        fscanf(filePointer, "%d", &array[x]);
+    }//end for
     fclose(filePointer);
-    printf("Data 2 loaded\n");
-    vars->arraySize2 = arrayIndex;
+    printf("Data 1 loaded\n");
     vars->array2 = array;
+    vars->arraySize2 = arraySize;
 }//end func
 
 /*
@@ -338,5 +312,9 @@ int main(int argc, char** argv){
         //load the data again
         loadData1(vars);
         loadData2(vars);
+
+        // for(int x =0; x < 50000; x++){
+        //     printf("%d\n", vars->array1[x]);
+        // }//end if
     }//end while
 }//end main
