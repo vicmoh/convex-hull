@@ -21,23 +21,17 @@
 #define d debug("CHECK\n");
 
 typedef struct instanceVars{
-    double timeResult;
-    int totalInversion;
     char fileName[99];
     int* array1;
     double* array2;
     int arraySize1;
     int arraySize2;
-    struct timeval stop;
-    struct timeval start;
 }Instance;
 
-Instance initInstance(){
-    Instance newVars;
-    newVars.timeResult = 0;
-    newVars.totalInversion = 0;
-    newVars.arraySize1 = 0;
-    newVars.arraySize2 = 0;
+Instance* initInstance(){
+    Instance* newVars = calloc(1, sizeof(Instance));
+    newVars->arraySize1 = 0;
+    newVars->arraySize2 = 0;
     return newVars;
 }//end constructor
 
@@ -55,13 +49,10 @@ char* setString(char* string){
     return newString;
 }//end func
 
-void countInversion(int array[], int arraySize, Instance* vars){
+int countInversion(int array[], int arraySize){
     //dec vars
     int inversionCount = 0;
-    double start = 0;
-    double stop = 0;
     //loop the first comparison index
-    start = clock();
     for(int x=0; x < arraySize; x++){
         //loop the second comparison index
         for(int i=x+1; i < arraySize; i++){
@@ -71,12 +62,9 @@ void countInversion(int array[], int arraySize, Instance* vars){
             }//end if
         }//end for
     }//end for
-    stop = clock();
-    double timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
-    vars->totalInversion = inversionCount;
-    vars->timeResult = timeSpent;
     // debug("debug totalInversion: %d\n", inversionCount);
     // debug("debug timeResult: %d\n", vars->timeResult);
+    return inversionCount;
 }//end func
 
 void loadData1(Instance* vars){
@@ -137,6 +125,7 @@ void loadData2(Instance* vars){
     vars->array2 = array;
 }//end func
 
+/*
 int merge(int array[], int tempArray[], int left, int middle, int right){
     //dec a tempArray vars
     int inversionCount = 0;
@@ -209,16 +198,87 @@ int mergeSort(int array[], int arraySize){
     int* tempArray = malloc(sizeof(int)*arraySize);
     //int tempArray[arraySize];
     return recurseMergeSort(array, tempArray, 0, arraySize - 1);
-}//end func
+}//end func*/
+
+int  _mergeSort(int arr[], int temp[], int left, int right);
+int merge(int arr[], int temp[], int left, int mid, int right);
+ 
+/* This function sorts the input array and returns the
+   number of inversions in the array */
+int mergeSort(int arr[], int array_size)
+{
+    int *temp = (int *)malloc(sizeof(int)*array_size);
+    return _mergeSort(arr, temp, 0, array_size - 1);
+}
+ 
+/* An auxiliary recursive function that sorts the input array and
+  returns the number of inversions in the array. */
+int _mergeSort(int arr[], int temp[], int left, int right)
+{
+  int mid, inv_count = 0;
+  if (right > left)
+  {
+    /* Divide the array into two parts and call _mergeSortAndCountInv()
+       for each of the parts */
+    mid = (right + left)/2;
+ 
+    /* Inversion count will be sum of inversions in left-part, right-part
+      and number of inversions in merging */
+    inv_count  = _mergeSort(arr, temp, left, mid);
+    inv_count += _mergeSort(arr, temp, mid+1, right);
+ 
+    /*Merge the two parts*/
+    inv_count += merge(arr, temp, left, mid+1, right);
+  }
+  return inv_count;
+}
+ 
+/* This funt merges two sorted arrays and returns inversion count in
+   the arrays.*/
+int merge(int arr[], int temp[], int left, int mid, int right)
+{
+  int i, j, k;
+  int inv_count = 0;
+ 
+  i = left; /* i is index for left subarray*/
+  j = mid;  /* j is index for right subarray*/
+  k = left; /* k is index for resultant merged subarray*/
+  while ((i <= mid - 1) && (j <= right))
+  {
+    if (arr[i] <= arr[j])
+    {
+      temp[k++] = arr[i++];
+    }
+    else
+    {
+      temp[k++] = arr[j++];
+ 
+     /*this is tricky -- see above explanation/diagram for merge()*/
+      inv_count = inv_count + (mid - i);
+    }
+  }
+ 
+  /* Copy the remaining elements of left subarray
+   (if there are any) to temp*/
+  while (i <= mid - 1)
+    temp[k++] = arr[i++];
+ 
+  /* Copy the remaining elements of right subarray
+   (if there are any) to temp*/
+  while (j <= right)
+    temp[k++] = arr[j++];
+ 
+  /*Copy back the merged elements to original array*/
+  for (i=left; i <= right; i++)
+    arr[i] = temp[i];
+ 
+  return inv_count;
+}
 
 int main(int argc, char** argv){
     //dec vars
     char* menu = calloc(256, sizeof(char)*256);
-    Instance vars = initInstance();
-
-    //load data 1 and 2
-    loadData1(&vars);
-    loadData2(&vars);
+    Instance* vars = initInstance();
     
     //infinite loop until user exits 
     while(1){
@@ -235,18 +295,26 @@ int main(int argc, char** argv){
 
         if(strcmp(menu, "1") == 0){
             //brute force
+            double start = 0, stop = 0, timeSpent = 0;
+            int totalInversion = 0;
             printf("Calculating...\n");
-            countInversion(vars.array1, vars.arraySize1, &vars);
-            printf("Total inversion: %d\n", vars.totalInversion);
-            printf("Total execution time: %f seconds\n", vars.timeResult);
+            start = clock();
+            totalInversion = countInversion(vars->array1, vars->arraySize1);
+            stop = clock();
+            timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
+            printf("Total inversion: %d\n", totalInversion);
+            printf("Total execution time: %f seconds\n", timeSpent);
+            vars = initInstance();
         }else if(strcmp(menu, "2") == 0){
             //devide and conquer
+            double start = 0, stop = 0, timeSpent = 0;
+            int totalInversion = 0;
             printf("calculating...\n");
-            double start = clock();
-            vars.totalInversion = mergeSort(vars.array1, vars.arraySize1);
-            double stop = clock();
-            double timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
-            printf("Total Inversion: %d\n", vars.totalInversion);
+            start = clock();
+            totalInversion = mergeSort(vars->array1, vars->arraySize1);
+            stop = clock();
+            timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
+            printf("Total Inversion: %d\n", totalInversion);
             printf("Total execution time: %f seconds\n", timeSpent);
         }else if(strcmp(menu, "3") == 0){
             //brute forces convex hull
@@ -258,12 +326,17 @@ int main(int argc, char** argv){
             //compare execution times of 3 and 4
         }else if(strcmp(menu, "7") == 0){
             //exit
-            free(vars.array1);
-            free(vars.array2);
+            free(vars);
+            free(vars->array1);
+            free(vars->array2);
             free(menu);
             exit(0);
         }else{
             printf("Invalid input, please re-enter.\n");
         }//end if
+
+        //load the data again
+        loadData1(vars);
+        loadData2(vars);
     }//end while
 }//end main
