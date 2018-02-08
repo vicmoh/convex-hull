@@ -43,7 +43,7 @@ Instance initInstance(){
 
 char* userInput(char* input){
     //ask for user input
-    fgets(input, 100, stdin);
+    fgets(input, 256, stdin);
     input[strcspn(input, "\r\n")] = '\0';
     //return
     return input;
@@ -193,11 +193,11 @@ int recurseMergeSort(int array[], int tempArray[], int left, int right){
     //a recursion function that sorts using merge sort
     int middle = 0;
     int inversionCount = 0;
-    if(left < right){
+    if(right > left){
         //divide the array into 2
         middle = (left + right)/2;
         //sum the inversion for left and right sections
-        inversionCount  = recurseMergeSort(array, tempArray, left, middle);
+        inversionCount = recurseMergeSort(array, tempArray, left, middle);
         inversionCount = inversionCount + recurseMergeSort(array, tempArray, middle+1, right);
         inversionCount = inversionCount + merge(array, tempArray, left, middle+1, right);
     }//end if
