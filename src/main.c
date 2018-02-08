@@ -136,6 +136,75 @@ void loadData2(Instance* vars){
     vars->array2 = array;
 }//end func
 
+int mergeSort(int array[], int array_size){
+    //this function sort the input using divide conquer
+    int* tempArray = malloc(sizeof(tempArray)*arraySize);
+    return recurseMergeSort(array, tempArray, 0, arraySize - 1);
+}//end func
+ 
+int recurseMergeSort(int array[], int tempArray[], int left, int right){
+    //a recursion function that sorts using merge sort
+    int middle = 0;
+    int inversionCoutn = 0;
+    if(left < right){
+        //divide the array into 2
+        middle = (left + right)/2;
+        //sum the inversion for left and right sections
+        inversionCount  = recurseMergeSort(arr, tempArray, left, middle);
+        inversionCount = inversionCount + recurseMergeSort(arr, tempArray, middle+1, right);
+        
+        //dec a tempArray vars
+        int leftIndex = rightIndex = left;//for teh left and right array index section
+        int middleIndex = middle;//for the right array index section 
+        //combined the two sections
+        while ((leftIndex <= middle) && (middleIndex <= right)){
+            if (array[leftIndex] <= array[middleIndex]){
+                //iterate to the next index
+                rightIndex = rightIndex + 1;
+                leftIndex = leftIndex + 1;
+                //added it to the temp array
+                tempArray[rightIndex] = array[leftIndex];
+            }else{
+                //iterate to the next index
+                rightIndex = rightIndex + 1;
+                leftIndex = leftIndex + 1;
+                //added to the temp array
+                tempArray[rightIndex] = array[middleIndex];
+                inversionCount += (middle + 1 - leftIndex);
+            }//end if
+        }//end while
+
+        //copy the left section of the remaining element of the arrayay
+        while(leftIndex <= middle){
+            //iterate to the next index
+            rightIndex = rightIndex + 1;
+            leftIndex = leftIndex + 1;
+            //added to the temp array
+            tempArray[rightIndex] = array[leftIndex];
+        }//end while
+
+        //copy again, but this time do to the right
+        while(middleIndex <= right){
+            //iterate to the next index
+            rightIndex = rightIndex + 1;
+            leftIndex = leftIndex + 1;
+            //added to the temp array
+            tempArray[rightIndex] = array[middleIndex];
+        }//end while
+
+        //copy to the originated arrayay
+        for(leftIndex=left; leftIndex <= right; leftIndex++){
+            array[leftIndex] = tempArray[leftIndex];
+        }//end for
+
+        //return the inversion count
+        return inversionCount;
+    }//end if
+
+    //return the inversion count
+    return inversionCount;
+}//end func
+
 int main(int argc, char** argv){
     //dec vars
     char* menu = calloc(256, sizeof(char)*256);
