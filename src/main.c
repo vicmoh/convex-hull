@@ -18,6 +18,7 @@
 //macros
 #define DEBUG true
 #define debug if(DEBUG)printf
+#define d debug("CHECK\n");
 
 typedef struct instanceVars{
     double timeResult;
@@ -136,28 +137,23 @@ void loadData2(Instance* vars){
     vars->array2 = array;
 }//end func
 
-int mergeSort(int array[], int array_size){
-    //this function sort the input using divide conquer
-    int* tempArray = malloc(sizeof(tempArray)*arraySize);
-    return recurseMergeSort(array, tempArray, 0, arraySize - 1);
-}//end func
- 
 int recurseMergeSort(int array[], int tempArray[], int left, int right){
     //a recursion function that sorts using merge sort
     int middle = 0;
-    int inversionCoutn = 0;
+    int inversionCount = 0;
     if(left < right){
         //divide the array into 2
         middle = (left + right)/2;
         //sum the inversion for left and right sections
-        inversionCount  = recurseMergeSort(arr, tempArray, left, middle);
-        inversionCount = inversionCount + recurseMergeSort(arr, tempArray, middle+1, right);
+        inversionCount  = recurseMergeSort(array, tempArray, left, middle);
+        inversionCount = inversionCount + recurseMergeSort(array, tempArray, middle+1, right);
         
         //dec a tempArray vars
+        int rightIndex;
         int leftIndex = rightIndex = left;//for teh left and right array index section
-        int middleIndex = middle;//for the right array index section 
+        int middleIndex = middle + 1;//for the right array index section 
         //combined the two sections
-        while ((leftIndex <= middle) && (middleIndex <= right)){
+        while ((leftIndex <= middle - 1) && (middleIndex <= right)){
             if (array[leftIndex] <= array[middleIndex]){
                 //iterate to the next index
                 rightIndex = rightIndex + 1;
@@ -170,12 +166,12 @@ int recurseMergeSort(int array[], int tempArray[], int left, int right){
                 leftIndex = leftIndex + 1;
                 //added to the temp array
                 tempArray[rightIndex] = array[middleIndex];
-                inversionCount += (middle + 1 - leftIndex);
+                inversionCount += (middle - leftIndex);
             }//end if
         }//end while
 
         //copy the left section of the remaining element of the arrayay
-        while(leftIndex <= middle){
+        while(leftIndex <= middle - 1){
             //iterate to the next index
             rightIndex = rightIndex + 1;
             leftIndex = leftIndex + 1;
@@ -198,11 +194,20 @@ int recurseMergeSort(int array[], int tempArray[], int left, int right){
         }//end for
 
         //return the inversion count
+        //free(tempArray);
         return inversionCount;
     }//end if
 
     //return the inversion count
+    //free(tempArray);
     return inversionCount;
+}//end func
+
+int mergeSort(int array[], int arraySize){
+    //this function sort the input using divide conquer
+    //int* tempArray = malloc(sizeof(int)*arraySize);
+    int tempArray[arraySize+999];
+    return recurseMergeSort(array, tempArray, 0, arraySize - 1);
 }//end func
 
 int main(int argc, char** argv){
@@ -235,7 +240,13 @@ int main(int argc, char** argv){
             printf("Total execution time: %f seconds\n", vars.timeResult);
         }else if(strcmp(menu, "2") == 0){
             //devide and conquer
-            
+            printf("calculating...\n");
+            double start = clock();
+            vars.totalInversion = mergeSort(vars.array1, vars.arraySize1);
+            double stop = clock();
+            double timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
+            printf("Total Inversion: %d\n", vars.totalInversion);
+            printf("Total execution time: %f seconds\n", timeSpent);
         }else if(strcmp(menu, "3") == 0){
             //brute forces convex hull
         }else if(strcmp(menu, "4") == 0){
