@@ -86,12 +86,12 @@ void loadData1(Instance* vars){
 void loadData2(Instance* vars){
     //dec vars
     const int arraySize = 50000;
-    int* array = malloc(sizeof(int)*arraySize);
+    double* array = malloc(sizeof(double)*arraySize);
     FILE* filePointer = fopen("./assets/data_1_a2.txt", "r");
     //loop until the end of file
     printf("Loading data 1...\n");
     for(int x=0; x<arraySize; x++){
-        fscanf(filePointer, "%d", &array[x]);
+        fscanf(filePointer, "%lf", &array[x]);
     }//end for
     fclose(filePointer);
     printf("Data 1 loaded\n");
@@ -253,6 +253,10 @@ int main(int argc, char** argv){
     //dec vars
     char* menu = calloc(256, sizeof(char)*256);
     Instance* vars = initInstance();
+
+    //load the data again
+    loadData1(vars);
+    loadData2(vars);
     
     //infinite loop until user exits 
     while(1){
