@@ -296,6 +296,7 @@ int main(int argc, char** argv){
             printf("Total execution time: %f seconds\n", timeSpent);
         }else if(strcmp(menu, "3") == 0){
             //brute forces convex hull
+            
         }else if(strcmp(menu, "4") == 0){
             //divide and conquer convex hull
         }else if(strcmp(menu, "5") == 0){
