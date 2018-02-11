@@ -125,62 +125,58 @@ int mergeSort(int arr[], int array_size){
     return recurseMergeSort(arr, temp, 0, array_size - 1);
 }//end func
  
-
 int recurseMergeSort(int array[], int tempArray[], int left, int right){
     //a recursive functions that will return that inversion
-    intmiddle, inversionCount = 0;
+    int middle = 0;
+    int inversionCount = 0;
+    //check if right is greater than left
     if (right > left){
         //have the array divide into two parts
-       middle = (right + left)/2;
+        middle = (right + left)/2;
 
         //coutn the inversion and use recursion to merge array
         inversionCount  = recurseMergeSort(array, tempArray, left,middle);
         inversionCount += recurseMergeSort(array, tempArray,middle+1, right);
 
         //merge the to a tempArray which will sort it
-        inversionCount += merge(array, tempArray, left,middle+1, right);
+        inversionCount += merge(array, tempArray, left, middle+1, right);
     }//end if
     return inversionCount;
 }//end func
  
-/* This funt merges two sorted arrays and returns inversion count in
-   the arrays.*/
 int merge(int arr[], int temp[], int left, int mid, int right){
-
-    
+    //merg the sorted section into a temp array and combine them
     int i, j, k;
-    int inv_count = 0;
+    int inversionCount = 0;
 
-    i = left; /* i is index for left subarray*/
-    j = mid;  /* j is index for right subarray*/
-    k = left; /* k is index for resultant merged subarray*/
+    i = left; //left index for the left asub section
+    j = mid;  //right index for the right sub section
+    k = left; //the resulting merge index
     while ((i <= mid - 1) && (j <= right)){
         if (arr[i] <= arr[j]){
             temp[k++] = arr[i++];
         }else{
             temp[k++] = arr[j++];
 
-            /*this is tricky -- see above explanation/diagram for merge()*/
-            inv_count = inv_count + (mid - i);
+            //count the inversio here
+            inversionCount = inversionCount + (mid - i);
         }//end if
     }//end while
 
-    /* Copy the remaining elements of left subarray
-    (if there are any) to temp*/
+    //copy the left section to the temp array
     while (i <= mid - 1)
     temp[k++] = arr[i++];
 
-    /* Copy the remaining elements of right subarray
-    (if there are any) to temp*/
+    //copy the right section to the temp array
     while (j <= right)
     temp[k++] = arr[j++];
 
-    /*Copy back the merged elements to original array*/
+    //once copied , moved the sorted section to the original array
     for (i=left; i <= right; i++)
     arr[i] = temp[i];
 
-    //return
-    return inv_count;
+    //return the inversion count
+    return inversionCount;
 }//end func
 
 int main(int argc, char** argv){
