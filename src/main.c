@@ -122,7 +122,7 @@ void loadData2(Instance* vars){
  
 int mergeSort(int array[], int arraySize){
     //a function wrapper for merge sort
-    int *tempArray = malloc(sizeof(int)*arraySize);
+    int *tempArray = calloc(arraySize, sizeof(int)*arraySize);
     return recurseMergeSort(array, tempArray, 0, arraySize - 1);
 }//end func
  
@@ -137,7 +137,7 @@ int recurseMergeSort(int array[], int tempArray[], int left, int right){
 
         //coutn the inversion and use recursion to merge array
         inversionCount  = recurseMergeSort(array, tempArray, left,middle);
-        inversionCount += recurseMergeSort(array, tempArray,middle+1, right);
+        inversionCount += recurseMergeSort(array, tempArray, middle+1, right);
 
         //merge the to a tempArray which will sort it
         inversionCount += merge(array, tempArray, left, middle+1, right);
@@ -145,27 +145,27 @@ int recurseMergeSort(int array[], int tempArray[], int left, int right){
     return inversionCount;
 }//end func
  
-int merge(int arr[], int temp[], int left, int mid, int right){
+int merge(int arr[], int temp[], int left, int middle, int right){
     //merg the sorted section into a temp array and combine them
     int i, j, k;
     int inversionCount = 0;
 
     i = left; //left index for the left asub section
-    j = mid;  //right index for the right sub section
+    j = middle;  //right index for the right sub section
     k = left; //the resulting merge index
-    while ((i <= mid - 1) && (j <= right)){
+    while ((i <= middle - 1) && (j <= right)){
         if (arr[i] <= arr[j]){
             temp[k++] = arr[i++];
         }else{
             temp[k++] = arr[j++];
 
-            //count the inversio here
-            inversionCount = inversionCount + (mid - i);
+            //count the inversion of the merge sort
+            inversionCount = inversionCount + (middle - i);
         }//end if
     }//end while
 
     //copy the left section to the temp array
-    while (i <= mid - 1)
+    while (i <= middle - 1)
     temp[k++] = arr[i++];
 
     //copy the right section to the temp array
