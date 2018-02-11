@@ -119,8 +119,8 @@ void loadData2(Instance* vars){
     const int arraySize = totalSize;
     double* array = malloc(sizeof(double)*arraySize);
 
-    FILE* filePointer = fopen("./assets/data_2_a2.txt", "r");
     //loop until the end of file
+    FILE* filePointer = fopen("./assets/data_2_a2.txt", "r");
     printf("Loading data 1...\n");
     for(int x=0; x<arraySize; x++){
         fscanf(filePointer, "%lf", &array[x]);
