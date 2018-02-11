@@ -286,10 +286,8 @@ int main(int argc, char** argv){
     Instance* vars = initInstance();
 
     //load the data again
-    printf("------------------------------------\n");
     loadData1(vars);
     loadData2(vars);
-    printf("------------------------------------\n");
     
     //infinite loop until user exits 
     while(1){
@@ -313,7 +311,7 @@ int main(int argc, char** argv){
             totalInversion = countInversion(vars->array1, vars->arraySize1);
             stop = clock();
             timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
-            printf("----------<<<<<RESULT>>>>>----------\n");
+            printf("----------<<<< RESULT >>>>----------\n");
             printf("Total inversion: %d\n", totalInversion);
             printf("Total execution time: %f seconds\n", timeSpent);
             printf("------------------------------------\n");
@@ -326,7 +324,7 @@ int main(int argc, char** argv){
             totalInversion = mergeSort(vars->array1, vars->arraySize1);
             stop = clock();
             timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
-            printf("----------<<<<<RESULT>>>>>----------\n");
+            printf("----------<<<< RESULT >>>>----------\n");
             printf("Total Inversion: %d\n", totalInversion);
             printf("Total execution time: %f seconds\n", timeSpent);
             printf("------------------------------------\n");
@@ -340,7 +338,7 @@ int main(int argc, char** argv){
             totalPoints = bruteForceConvexHull(vars->array2, vars->arraySize2);
             stop = clock();
             timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
-            printf("----------<<<<<RESULT>>>>>----------\n");
+            printf("----------<<<< RESULT >>>>----------\n");
             printf("Total number of points: %d\n", totalPoints);
             printf("Total execution time: %f seconds\n", timeSpent);
             printf("------------------------------------\n");
@@ -362,12 +360,10 @@ int main(int argc, char** argv){
         }//end if
 
         //load the data again
-        printf("------------------------------------\n");
         free(vars->array1);
         free(vars->array2);
         loadData1(vars);
         loadData2(vars);
-        printf("------------------------------------\n");
 
         //for debugging
         // for(int x =0; x < 50000; x++){
