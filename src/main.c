@@ -282,9 +282,9 @@ int bruteForceConvexHull(Points* array, int arraySize){
 int divideAndConquerConvexHull(Points* points, int arraySize){
     //dec vars
     int numberOfPoints = 0;
-    Points* hull = NULL;
-    Points* left = NULL;
-    Points* right = NULL;
+    Points* hullPoints = NULL;
+    Points* leftPoints = NULL;
+    Points* rightPoints = NULL;
     Points* mostLeft = malloc(sizeof(Points));
     Points* mostRight = malloc(sizeof(Points));
     //init the most left and right to 0
@@ -309,8 +309,17 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
 
     //copy into the left and right sections
     for(int x=0; x<(arraySize/2); x++){
-        
+        double lineValue = whichSideOfLine(mostLeft, mostRight, points);//not sure if im doing it 
+        //add to left
+        if(lineValue + 0.00000001 < 0){
+
+        }//end if
+        if(lineValue - 0.00000001 > 0){
+            
+        }//end if
     }//end for
+
+    return numberOfPoints;
 }//end func
 
 /***********************************************************
