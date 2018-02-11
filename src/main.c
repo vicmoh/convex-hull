@@ -20,6 +20,11 @@
 #define debug if(DEBUG)printf
 #define d debug("CHECK\n");
 
+/***********************************************************
+ * Headers
+ ***********************************************************/
+
+//struct that act as instance vars
 typedef struct instanceVars{
     char fileName[99];
     int* array1;
@@ -27,6 +32,21 @@ typedef struct instanceVars{
     int arraySize1;
     int arraySize2;
 }Instance;
+//helper fucnctions
+Instance* initInstance();
+char* userInput(char* input);
+char* setString(char* string);
+int countInversion(int array[], int arraySize);
+//functions to load the data
+void loadData1(Instance* vars);
+void loadData2(Instance* vars);
+//for merge sort 
+int  recurseMergeSort(int arr[], int temp[], int left, int right);
+int merge(int arr[], int temp[], int left, int mid, int right);
+
+/***********************************************************
+ * Functions
+ ***********************************************************/
 
 Instance* initInstance(){
     Instance* newVars = calloc(1, sizeof(Instance));
@@ -98,16 +118,13 @@ void loadData2(Instance* vars){
     vars->array2 = array;
     vars->arraySize2 = arraySize;
 }//end func
-
-int  recurseMergeSort(int arr[], int temp[], int left, int right);
-int merge(int arr[], int temp[], int left, int mid, int right);
  
 /* This function sorts the input array and returns the
    number of inversions in the array */
 int mergeSort(int arr[], int array_size){
     int *temp = malloc(sizeof(int)*array_size);
     return recurseMergeSort(arr, temp, 0, array_size - 1);
-}
+}//end func
  
 /* An auxiliary recursive function that sorts the input array and
   returns the number of inversions in the array. */
