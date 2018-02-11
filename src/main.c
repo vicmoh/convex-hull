@@ -42,7 +42,7 @@ void loadData1(Instance* vars);
 void loadData2(Instance* vars);
 //for merge sort 
 int mergeSort(int array[], int arraySize);
-int  recurseMergeSort(int array[], int tempArray[], int left, int right);
+int recurseMergeSort(int array[], int tempArray[], int left, int right);
 int merge(int array[], int tempArray[], int left, int middle, int right);
 
 /***********************************************************
