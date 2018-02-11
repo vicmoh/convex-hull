@@ -179,6 +179,10 @@ int merge(int arr[], int temp[], int left, int mid, int right){
     return inversionCount;
 }//end func
 
+/***********************************************************
+ * main function to run the program
+ ***********************************************************/
+
 int main(int argc, char** argv){
     //dec vars
     char* menu = calloc(256, sizeof(char)*256);
