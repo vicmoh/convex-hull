@@ -24,11 +24,16 @@
  * Headers
  ***********************************************************/
 
+//struct points for array 2
+typedef struct points{
+    double x;
+    double y;
+}Points;
 //struct that act as instance vars
 typedef struct instanceVars{
     char fileName[99];
     int* array1;
-    double* array2;
+    Points* array2;
     int arraySize1;
     int arraySize2;
 }Instance;
@@ -117,13 +122,13 @@ void loadData2(Instance* vars){
 
     //dec vars for reading the array
     const int arraySize = totalSize;
-    double* array = malloc(sizeof(double)*arraySize);
+    Points* array = malloc(sizeof(Points)*arraySize);
 
     //loop until the end of file
     FILE* filePointer = fopen("./assets/data_2_a2.txt", "r");
     printf("Loading data 1...\n");
-    for(int x=0; x<arraySize; x++){
-        fscanf(filePointer, "%lf", &array[x]);
+    for(int x=0; x<(arraySize/2); x++){
+        fscanf(filePointer, "%lf %lf", &array->x, &array->y);
     }//end for
     fclose(filePointer);
     printf("Data 1 loaded\n");
@@ -204,6 +209,23 @@ int recurseMergeSort(int array[], int tempArray[], int left, int right){
     return inversionCount;
 }//end func
 
+double whichSideOfLine(Points* point1, Points* point2, Points* pointSubject){
+    return (pointSubject->x - point1->x) * (point2->y - point1->y) - (pointSubject->y - point1->y) * (point2->x - point1->x);
+}//end func
+
+int bruteForceConvexHull(double array2x[], double array2y[], int arraySize){
+    for(int x=0; x<arraySize; x++){
+        for(int y=0; y<arraySize; y++){
+            //if their are the same points skip
+            if(x == y){
+                continue;
+            }//end if
+            
+            
+        }//end for
+    }//endd for
+}//end func
+
 /***********************************************************
  * main function to run the program
  ***********************************************************/
@@ -264,7 +286,6 @@ int main(int argc, char** argv){
         }else if(strcmp(menu, "7") == 0){
             //exit
             free(vars->array1);
-            free(vars->array2);
             free(vars);
             free(menu);
             exit(0);
@@ -274,7 +295,6 @@ int main(int argc, char** argv){
 
         //load the data again
         free(vars->array1);
-        free(vars->array2);
         loadData1(vars);
         loadData2(vars);
 
