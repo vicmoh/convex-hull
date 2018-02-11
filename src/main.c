@@ -119,36 +119,35 @@ void loadData2(Instance* vars){
     vars->arraySize2 = arraySize;
 }//end func
  
-/* This function sorts the input array and returns the
-   number of inversions in the array */
 int mergeSort(int arr[], int array_size){
+    //a function wrapper for merge sort
     int *temp = malloc(sizeof(int)*array_size);
     return recurseMergeSort(arr, temp, 0, array_size - 1);
 }//end func
  
-/* An auxiliary recursive function that sorts the input array and
-  returns the number of inversions in the array. */
-int recurseMergeSort(int arr[], int temp[], int left, int right){
-    int mid, inv_count = 0;
+
+int recurseMergeSort(int array[], int tempArray[], int left, int right){
+    //a recursive functions that will return that inversion
+    intmiddle, inversionCount = 0;
     if (right > left){
-        /* Divide the array into two parts and call _mergeSortAndCountInv()
-            for each of the parts */
-        mid = (right + left)/2;
+        //have the array divide into two parts
+       middle = (right + left)/2;
 
-        /* Inversion count will be sum of inversions in left-part, right-part
-            and number of inversions in merging */
-        inv_count  = recurseMergeSort(arr, temp, left, mid);
-        inv_count += recurseMergeSort(arr, temp, mid+1, right);
+        //coutn the inversion and use recursion to merge array
+        inversionCount  = recurseMergeSort(array, tempArray, left,middle);
+        inversionCount += recurseMergeSort(array, tempArray,middle+1, right);
 
-        /*Merge the two parts*/
-        inv_count += merge(arr, temp, left, mid+1, right);
+        //merge the to a tempArray which will sort it
+        inversionCount += merge(array, tempArray, left,middle+1, right);
     }//end if
-    return inv_count;
+    return inversionCount;
 }//end func
  
 /* This funt merges two sorted arrays and returns inversion count in
    the arrays.*/
 int merge(int arr[], int temp[], int left, int mid, int right){
+
+    
     int i, j, k;
     int inv_count = 0;
 
