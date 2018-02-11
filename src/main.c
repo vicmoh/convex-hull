@@ -49,6 +49,9 @@ void loadData2(Instance* vars);
 int mergeSort(int array[], int arraySize);
 int recurseMergeSort(int array[], int tempArray[], int left, int right);
 int merge(int array[], int tempArray[], int left, int middle, int right);
+//brute force convex hull 
+double whichSideOfLine(Points* point1, Points* point2, Points* pointSubject);
+int bruteForceConvexHull(Points* array, int arraySize);
 
 /***********************************************************
  * Functions
@@ -97,7 +100,7 @@ void loadData1(Instance* vars){
     //dec vars
     const int arraySize = 50000;
     int* array = malloc(sizeof(int)*arraySize);
-    FILE* filePointer = fopen("./assets/data_1_a2.txt", "r");
+    FILE* filePointer = fopen("./assets/data1.txt", "r");
     //loop until the end of file
     printf("Loading data 1...\n");
     for(int x=0; x<arraySize; x++){
@@ -111,7 +114,7 @@ void loadData1(Instance* vars){
 
 void loadData2(Instance* vars){
     //count the size of the file
-    FILE* filePointerSize = fopen("./assets/data_2_a2.txt", "r");
+    FILE* filePointerSize = fopen("./assets/data2.txt", "r");
     char buffer[256];
     int totalSize = 0;
     while(fgets(buffer, 256, filePointerSize)){
@@ -216,9 +219,11 @@ double whichSideOfLine(Points* point1, Points* point2, Points* pointSubject){
 int bruteForceConvexHull(Points* array, int arraySize){
     //dec vars
     int numberOfPoints = 0;
+    
+    debug("arraySize: %d\n", arraySize/2);
     //nested loop to find the next point
-    for(int x=0; x<arraySize; x++){
-        for(int y=0; y<arraySize; y++){
+    for(int x=0; x<arraySize/2; x++){
+        for(int y=0; y<arraySize/2; y++){
             //if their are the same points skip
             if(x == y){
                 continue;
@@ -227,21 +232,22 @@ int bruteForceConvexHull(Points* array, int arraySize){
             Points* point1 = &array[x];
             Points* point2 = &array[y];
 
-            for(int k=0; k<arraySize; k++){
+            for(int k=0; k<arraySize/2; k++){
                 if(k == x || k == y){
                     continue;
                 }//end if
 
                 double lineValue = whichSideOfLine(point1, point2, &array[k]);
                 if(lineValue < 0){
+                    numberOfPoints++;
+                    debug("%d ", numberOfPoints);
                     break;
                 }//end if
-
-                numberOfPoints++;
             }//end for
-            
         }//end for
-    }//endd for
+        debug("check Points %d\n", x);
+    }//end for
+    debug("\n");
     return numberOfPoints;
 }//end func
 
@@ -314,6 +320,7 @@ int main(int argc, char** argv){
         }else if(strcmp(menu, "7") == 0){
             //exit
             free(vars->array1);
+            free(vars->array2);
             free(vars);
             free(menu);
             exit(0);
@@ -323,6 +330,7 @@ int main(int argc, char** argv){
 
         //load the data again
         free(vars->array1);
+        free(vars->array2);
         loadData1(vars);
         loadData2(vars);
 
