@@ -41,8 +41,9 @@ int countInversion(int array[], int arraySize);
 void loadData1(Instance* vars);
 void loadData2(Instance* vars);
 //for merge sort 
-int  recurseMergeSort(int arr[], int temp[], int left, int right);
-int merge(int arr[], int temp[], int left, int mid, int right);
+int mergeSort(int array[], int arraySize);
+int  recurseMergeSort(int array[], int tempArray[], int left, int right);
+int merge(int array[], int tempArray[], int left, int middle, int right);
 
 /***********************************************************
  * Functions
@@ -119,10 +120,10 @@ void loadData2(Instance* vars){
     vars->arraySize2 = arraySize;
 }//end func
  
-int mergeSort(int arr[], int array_size){
+int mergeSort(int array[], int arraySize){
     //a function wrapper for merge sort
-    int *temp = malloc(sizeof(int)*array_size);
-    return recurseMergeSort(arr, temp, 0, array_size - 1);
+    int *tempArray = malloc(sizeof(int)*arraySize);
+    return recurseMergeSort(array, tempArray, 0, arraySize - 1);
 }//end func
  
 int recurseMergeSort(int array[], int tempArray[], int left, int right){
