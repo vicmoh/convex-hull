@@ -16,7 +16,7 @@
 #include <sys/time.h>
 #include <time.h>
 //macros
-#define DEBUG true
+#define DEBUG false
 #define debug if(DEBUG)printf
 #define d debug("CHECK\n");
 
@@ -102,12 +102,12 @@ void loadData1(Instance* vars){
     int* array = malloc(sizeof(int)*arraySize);
     FILE* filePointer = fopen("./assets/data1.txt", "r");
     //loop until the end of file
-    printf("Loading data 1...\n");
+    debug("Loading data 1...\n");
     for(int x=0; x<arraySize; x++){
         fscanf(filePointer, "%d", &array[x]);
     }//end for
     fclose(filePointer);
-    printf("Data 1 loaded\n");
+    debug("Data 1 loaded\n");
     vars->array1 = array;
     vars->arraySize1 = arraySize;
 }//end func
@@ -129,13 +129,13 @@ void loadData2(Instance* vars){
 
     //loop until the end of file
     FILE* filePointer = fopen("./assets/data2.txt", "r");
-    printf("Loading data 2...\n");
+    debug("Loading data 2...\n");
     for(int x=0; x<(arraySize/2); x++){
         fscanf(filePointer, "%lf %lf", &array[x].x, &array[x].y);
         //debug("%lf %lf\n", array[x].x, array[x].y);
     }//end for
     fclose(filePointer);
-    printf("Data 2 loaded\n");
+    debug("Data 2 loaded\n");
     vars->array2 = array;
     vars->arraySize2 = arraySize;
 }//end func
@@ -286,8 +286,10 @@ int main(int argc, char** argv){
     Instance* vars = initInstance();
 
     //load the data again
+    printf("------------------------------------\n");
     loadData1(vars);
     loadData2(vars);
+    printf("------------------------------------\n");
     
     //infinite loop until user exits 
     while(1){
@@ -311,8 +313,10 @@ int main(int argc, char** argv){
             totalInversion = countInversion(vars->array1, vars->arraySize1);
             stop = clock();
             timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
+            printf("----------<<<<<RESULT>>>>>----------\n");
             printf("Total inversion: %d\n", totalInversion);
             printf("Total execution time: %f seconds\n", timeSpent);
+            printf("------------------------------------\n");
         }else if(strcmp(menu, "2") == 0){
             //devide and conquer
             double start = 0, stop = 0, timeSpent = 0;
@@ -322,8 +326,10 @@ int main(int argc, char** argv){
             totalInversion = mergeSort(vars->array1, vars->arraySize1);
             stop = clock();
             timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
+            printf("----------<<<<<RESULT>>>>>----------\n");
             printf("Total Inversion: %d\n", totalInversion);
             printf("Total execution time: %f seconds\n", timeSpent);
+            printf("------------------------------------\n");
         }else if(strcmp(menu, "3") == 0){
             //brute forces convex hull
             //devide and conquer
@@ -334,8 +340,10 @@ int main(int argc, char** argv){
             totalPoints = bruteForceConvexHull(vars->array2, vars->arraySize2);
             stop = clock();
             timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
+            printf("----------<<<<<RESULT>>>>>----------\n");
             printf("Total number of points: %d\n", totalPoints);
             printf("Total execution time: %f seconds\n", timeSpent);
+            printf("------------------------------------\n");
         }else if(strcmp(menu, "4") == 0){
             //divide and conquer convex hull
         }else if(strcmp(menu, "5") == 0){
@@ -354,10 +362,12 @@ int main(int argc, char** argv){
         }//end if
 
         //load the data again
+        printf("------------------------------------\n");
         free(vars->array1);
         free(vars->array2);
         loadData1(vars);
         loadData2(vars);
+        printf("------------------------------------\n");
 
         //for debugging
         // for(int x =0; x < 50000; x++){
