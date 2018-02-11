@@ -58,6 +58,7 @@ int bruteForceConvexHull(Points* array, int arraySize);
 //divide and conquer convex hull
 void addPoints(Points* array, int x, int y);
 int divideAndConquerConvexHull(Points* points, int arraySize);
+void findHull(Points* pointArray, Points* p, Points* q, Points* hullPoints);
 
 /***********************************************************
  * Functions
@@ -333,8 +334,11 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
         }//end if
     }//end for
 
-    //recursion
-    
+    //add and recurse
+    addPoints(hullPoints, mostLeft->x, mostLeft->y);
+    addPoints(hullPoints, mostRight->x, mostRight->y);
+    findHull(leftPoints, mostLeft, mostRight, hullPoints);
+    findHull(rightPoints, mostRight, mostLeft, hullPoints);
 
     //count the number of points of the convex hull
     for(int x=0; x<GET_ARRAY_SIZE(hullPoints);x++){
@@ -466,6 +470,18 @@ int main(int argc, char** argv){
             //divide and conquer convex hull
         }else if(strcmp(menu, "5") == 0){
             //compare execution times of 1 and 2
+            double start = 0, stop = 0, timeSpent = 0;
+            int totalPoints = 0;
+            printf("calculating...\n");
+            start = clock();
+            totalPoints = bruteForceConvexHull(vars->array2, vars->arraySize2);
+            stop = clock();
+            timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
+            printf("----------<<<< RESULT >>>>----------\n");
+            printf("Total number of points: %d\n", totalPoints);
+            printf("Total execution time: %f seconds\n", timeSpent);
+            printf("------------------------------------\n");
+        }else if(strcmp(menu, "4") == 0){
         }else if(strcmp(menu, "6") == 0){
             //compare execution times of 3 and 4
         }else if(strcmp(menu, "7") == 0){
