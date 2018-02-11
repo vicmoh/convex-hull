@@ -331,14 +331,25 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
         }//end if
     }//end for
 
+    //recursion
     
 
+    //count the number of points of the convex hull
+    for(int x=0; x<GET_ARRAY_SIZE(hullPoints);x++){
+        numberOfPoints++;
+    }//end for
+
+    //free and return the number of points
     free(hullPoints);
     free(leftPoints);
     free(rightPoints);
     free(mostLeft);
     free(mostRight);
     return numberOfPoints;
+}//end func
+
+void findHull(Points* atMostPointArray, Points* atMostPoint, Points* hullPoints){
+    
 }//end func
 
 /***********************************************************
