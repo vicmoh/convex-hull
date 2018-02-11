@@ -105,10 +105,21 @@ void loadData1(Instance* vars){
 }//end func
 
 void loadData2(Instance* vars){
-    //dec vars
-    const int arraySize = 50000;
+    //count the size of the file
+    FILE* filePointerSize = fopen("./assets/data_2_a2.txt", "r");
+    char buffer[256];
+    int totalSize = 0;
+    while(fgets(buffer, 256, filePointerSize)){
+        totalSize = totalSize + 2;
+    }//end while
+    debug("totalSize: %d\n", totalSize);
+    fclose(filePointerSize);
+
+    //dec vars for reading the array
+    const int arraySize = totalSize;
     double* array = malloc(sizeof(double)*arraySize);
-    FILE* filePointer = fopen("./assets/data_1_a2.txt", "r");
+
+    FILE* filePointer = fopen("./assets/data_2_a2.txt", "r");
     //loop until the end of file
     printf("Loading data 1...\n");
     for(int x=0; x<arraySize; x++){
@@ -122,7 +133,7 @@ void loadData2(Instance* vars){
  
 int mergeSort(int array[], int arraySize){
     //a function wrapper for merge sort
-    int *tempArray = calloc(arraySize, sizeof(int)*arraySize);
+    int tempArray[arraySize];
     int totalInversion = recurseMergeSort(array, tempArray, 0, arraySize - 1);
     return totalInversion;
 }//end func
@@ -230,7 +241,6 @@ int main(int argc, char** argv){
             timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
             printf("Total inversion: %d\n", totalInversion);
             printf("Total execution time: %f seconds\n", timeSpent);
-            vars = initInstance();
         }else if(strcmp(menu, "2") == 0){
             //devide and conquer
             double start = 0, stop = 0, timeSpent = 0;
@@ -253,9 +263,9 @@ int main(int argc, char** argv){
             //compare execution times of 3 and 4
         }else if(strcmp(menu, "7") == 0){
             //exit
-            free(vars);
             free(vars->array1);
             free(vars->array2);
+            free(vars);
             free(menu);
             exit(0);
         }else{
@@ -263,11 +273,16 @@ int main(int argc, char** argv){
         }//end if
 
         //load the data again
+        free(vars->array1);
+        free(vars->array2);
         loadData1(vars);
         loadData2(vars);
 
+        //for debugging
         // for(int x =0; x < 50000; x++){
         //     printf("%d\n", vars->array1[x]);
         // }//end if
+
     }//end while
+    return 0;
 }//end main
