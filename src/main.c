@@ -217,41 +217,6 @@ double whichSideOfLine(Points* point1, Points* point2, Points* pointSubject){
     return (pointSubject->x - point1->x) * (point2->y - point1->y) - (pointSubject->y - point1->y) * (point2->x - point1->x);
 }//end func
 
-// int bruteForceConvexHull(Points* array, int arraySize){
-//     //dec vars
-//     int numberOfPoints = 0;
-    
-//     debug("arraySize: %d\n", arraySize/2);
-//     //nested loop to find the next point
-//     for(int x=0; x<arraySize/2; x++){
-//         for(int y=0; y<arraySize/2; y++){
-//             //if their are the same points skip
-//             if(x == y){
-//                 continue;
-//             }//end if
-            
-//             Points* point1 = &array[x];
-//             Points* point2 = &array[y];
-
-//             for(int k=0; k<arraySize/2; k++){
-//                 if(k == x || k == y){
-//                     break;
-//                 }//end if
-
-//                 double lineValue = whichSideOfLine(point1, point2, &array[k]);
-//                 if(lineValue < 0){
-//                     numberOfPoints++;
-//                     debug("%d ", numberOfPoints);
-//                     break;
-//                 }//end if
-//             }//end for
-//         }//end for
-//         //debug("check Points %d\n", x);
-//     }//end for
-//     debug("\n");
-//     return numberOfPoints;
-// }//end func
-
 int bruteForceConvexHull(Points* array, int arraySize){
     //dec vars
     int numberOfPoints = 0;
@@ -271,28 +236,31 @@ int bruteForceConvexHull(Points* array, int arraySize){
                 double lineValue = whichSideOfLine(point1, point2, &array[k]);
 
                 if (lineValue > 0) {
-                    if (side == -1) { // detected point on wrong side, skip point
+                    //check if its the right side of checking points, if wrong skip
+                    if (side == -1) {
                         break;
-                    }
+                    }//end if
                     side = 1;
-                }
+                }//endd if
 
                 if (lineValue < 0) {
-                    if (side == 1) { // detected point on wrong side, skip point
+                    //check if its the right side of checking points, if wrong skip
+                    if (side == 1) {
                         break;
-                    }
+                    }//end if
                     side = -1;
-                }
+                }//end if
 
-                // check if extreme
+                //checking extreme
                 if (lineValue == 0) {
                     if ((point3->x > point2->x && point3->x > point1->x) || (point3->x < point2->x && point3->x > point1->x) || 
                         (point3->y < point2->y && point3->y < point1->y) || (point3->y > point2->y && point3->y > point1->y)){
                         break;
                     }//end if
                 }//end if
-
-                if (k == (arraySize/2)-1) { // every point successfull
+                
+                //when every point is successful
+                if (k == (arraySize/2)-1) {
                     if (side != 0) {
                         if (x != y) {
                             numberOfPoints++;
