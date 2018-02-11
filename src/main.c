@@ -19,6 +19,7 @@
 #define DEBUG false
 #define debug if(DEBUG)printf
 #define d debug("CHECK\n");
+#define GET_ARRAY_SIZE( array ) ( sizeof( array ) / sizeof( *array )) //or array[0] instead of *array
 
 /***********************************************************
  * Headers
@@ -53,6 +54,8 @@ int merge(int array[], int tempArray[], int left, int middle, int right);
 double whichSideOfLine(Points* point1, Points* point2, Points* pointSubject);
 int bruteForceConvexHull(Points* array, int arraySize);
 //divide and conquer convex hull
+void addPoints(Points* array, int x, int y);
+int divideAndConquerConvexHull(Points* points, int arraySize);
 
 /***********************************************************
  * Functions
@@ -279,13 +282,20 @@ int bruteForceConvexHull(Points* array, int arraySize){
     return numberOfPoints;
 }//end func
 
+void addPoints(Points* array, int x, int y){
+    int arraySize = GET_ARRAY_SIZE(array);
+    array = realloc(array, sizeof(Points)*(arraySize+9));
+    array[arraySize].x = x;
+    array[arraySize].y = y;
+}//end func
+
 int divideAndConquerConvexHull(Points* points, int arraySize){
     //dec vars
     int numberOfPoints = 0;
     //going to be a array
-    Points* hullPoints = malloc(sizeof(Points));
-    Points* leftPoints = malloc(sizeof(Points));
-    Points* rightPoints = malloc(sizeof(Points));
+    Points* hullPoints = malloc(sizeof(Points)*2);
+    Points* leftPoints = malloc(sizeof(Points)*2);
+    Points* rightPoints = malloc(sizeof(Points)*2);
     //need only one
     Points* mostLeft = malloc(sizeof(Points));
     Points* mostRight = malloc(sizeof(Points));
@@ -314,10 +324,10 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
         double lineValue = whichSideOfLine(mostLeft, mostRight, points);//not sure if im doing it 
         //add to left
         if(lineValue + 0.00000001 < 0){
-
+            addPoints(leftPoints, points[x].x, points[x].y);
         }//end if
         if(lineValue - 0.00000001 > 0){
-            
+            addPoints(rightPoints, points[x].x, points[x].y);
         }//end if
     }//end for
 
