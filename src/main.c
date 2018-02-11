@@ -213,7 +213,10 @@ double whichSideOfLine(Points* point1, Points* point2, Points* pointSubject){
     return (pointSubject->x - point1->x) * (point2->y - point1->y) - (pointSubject->y - point1->y) * (point2->x - point1->x);
 }//end func
 
-int bruteForceConvexHull(double array2x[], double array2y[], int arraySize){
+int bruteForceConvexHull(Points* array, int arraySize){
+    //dec vars
+    int numberOfPoints = 0;
+    //nested loop to find the next point
     for(int x=0; x<arraySize; x++){
         for(int y=0; y<arraySize; y++){
             //if their are the same points skip
@@ -221,9 +224,27 @@ int bruteForceConvexHull(double array2x[], double array2y[], int arraySize){
                 continue;
             }//end if
             
+            Points* point1 = &array[x];
+            Points* point2 = &array[y];
+
+            bool allPointsOnTheRight = true;
+            for(int k=0; k<arraySize; k++){
+                if(k == x || k == y){
+                    continue;
+                }//end if
+
+                double lineValue = whichSideOfLine(point1, point2, &array[k]);
+                if(lineValue < 0){
+                    allPointsOnTheRight = false;
+                    break;
+                }//end if
+
+                numberOfPoints++;
+            }//end for
             
         }//end for
     }//endd for
+    return numberOfPoints;
 }//end func
 
 /***********************************************************
