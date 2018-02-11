@@ -18,7 +18,7 @@
 #include <limits.h>
 #include <assert.h>
 //macros
-#define DEBUG false
+#define DEBUG true
 #define debug if(DEBUG)printf
 #define d debug("CHECK\n");
 #define GET_ARRAY_SIZE( array ) ( sizeof( array ) / sizeof( *array )) //or array[0] instead of *array
@@ -56,7 +56,7 @@ int merge(int array[], int tempArray[], int left, int middle, int right);
 double whichSideOfLine(Points* point1, Points* point2, Points* pointSubject);
 int bruteForceConvexHull(Points* array, int arraySize);
 //divide and conquer convex hull
-void addPoints(Points* array, int x, int y);
+void addPoints(Points* array, double x, double y);
 int divideAndConquerConvexHull(Points* points, int arraySize);
 void findHull(Points* pointArray, Points* p, Points* q, Points* hullPoints);
 
@@ -285,11 +285,12 @@ int bruteForceConvexHull(Points* array, int arraySize){
     return numberOfPoints;
 }//end func
 
-void addPoints(Points* array, int x, int y){
+void addPoints(Points* array, double x, double y){
     int arraySize = GET_ARRAY_SIZE(array);
     array = realloc(array, sizeof(Points)*(arraySize+1));
     array[arraySize].x = x;
     array[arraySize].y = y;
+    debug("debug addPoints: %lf, %lf\n", array[arraySize].x, array[arraySize].y);
 }//end func
 
 int divideAndConquerConvexHull(Points* points, int arraySize){
@@ -342,6 +343,7 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
 
     //count the number of points of the convex hull
     for(int x=0; x<GET_ARRAY_SIZE(hullPoints);x++){
+        debug("WENT TO NUMBER OF POINTS FOR LOOP\n");
         numberOfPoints++;
     }//end for
 
@@ -468,19 +470,19 @@ int main(int argc, char** argv){
             printf("------------------------------------\n");
         }else if(strcmp(menu, "4") == 0){
             //divide and conquer convex hull
-        }else if(strcmp(menu, "5") == 0){
-            //compare execution times of 1 and 2
             double start = 0, stop = 0, timeSpent = 0;
             int totalPoints = 0;
             printf("calculating...\n");
             start = clock();
-            totalPoints = bruteForceConvexHull(vars->array2, vars->arraySize2);
+            totalPoints = divideAndConquerConvexHull(vars->array2, vars->arraySize2);
             stop = clock();
             timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
             printf("----------<<<< RESULT >>>>----------\n");
             printf("Total number of points: %d\n", totalPoints);
             printf("Total execution time: %f seconds\n", timeSpent);
             printf("------------------------------------\n");
+        }else if(strcmp(menu, "5") == 0){
+            //compare execution times of 1 and 2
         }else if(strcmp(menu, "4") == 0){
         }else if(strcmp(menu, "6") == 0){
             //compare execution times of 3 and 4
