@@ -284,7 +284,7 @@ int bruteForceConvexHull(Points* array, int arraySize){
 
 void addPoints(Points* array, int x, int y){
     int arraySize = GET_ARRAY_SIZE(array);
-    array = realloc(array, sizeof(Points)*(arraySize+9));
+    array = realloc(array, sizeof(Points)*(arraySize+1));
     array[arraySize].x = x;
     array[arraySize].y = y;
 }//end func
@@ -293,9 +293,9 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
     //dec vars
     int numberOfPoints = 0;
     //going to be a array
-    Points* hullPoints = malloc(sizeof(Points)*2);
-    Points* leftPoints = malloc(sizeof(Points)*2);
-    Points* rightPoints = malloc(sizeof(Points)*2);
+    Points* hullPoints = malloc(sizeof(Points));
+    Points* leftPoints = malloc(sizeof(Points));
+    Points* rightPoints = malloc(sizeof(Points));
     //need only one
     Points* mostLeft = malloc(sizeof(Points));
     Points* mostRight = malloc(sizeof(Points));
@@ -330,6 +330,8 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
             addPoints(rightPoints, points[x].x, points[x].y);
         }//end if
     }//end for
+
+    
 
     free(hullPoints);
     free(leftPoints);
