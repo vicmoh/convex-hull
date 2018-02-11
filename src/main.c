@@ -131,7 +131,8 @@ void loadData2(Instance* vars){
     FILE* filePointer = fopen("./assets/data2.txt", "r");
     printf("Loading data 2...\n");
     for(int x=0; x<(arraySize/2); x++){
-        fscanf(filePointer, "%lf %lf", &array->x, &array->y);
+        fscanf(filePointer, "%lf %lf", &array[x].x, &array[x].y);
+        //debug("%lf %lf\n", array[x].x, array[x].y);
     }//end for
     fclose(filePointer);
     printf("Data 2 loaded\n");
@@ -216,39 +217,94 @@ double whichSideOfLine(Points* point1, Points* point2, Points* pointSubject){
     return (pointSubject->x - point1->x) * (point2->y - point1->y) - (pointSubject->y - point1->y) * (point2->x - point1->x);
 }//end func
 
+// int bruteForceConvexHull(Points* array, int arraySize){
+//     //dec vars
+//     int numberOfPoints = 0;
+    
+//     debug("arraySize: %d\n", arraySize/2);
+//     //nested loop to find the next point
+//     for(int x=0; x<arraySize/2; x++){
+//         for(int y=0; y<arraySize/2; y++){
+//             //if their are the same points skip
+//             if(x == y){
+//                 continue;
+//             }//end if
+            
+//             Points* point1 = &array[x];
+//             Points* point2 = &array[y];
+
+//             for(int k=0; k<arraySize/2; k++){
+//                 if(k == x || k == y){
+//                     break;
+//                 }//end if
+
+//                 double lineValue = whichSideOfLine(point1, point2, &array[k]);
+//                 if(lineValue < 0){
+//                     numberOfPoints++;
+//                     debug("%d ", numberOfPoints);
+//                     break;
+//                 }//end if
+//             }//end for
+//         }//end for
+//         //debug("check Points %d\n", x);
+//     }//end for
+//     debug("\n");
+//     return numberOfPoints;
+// }//end func
+
 int bruteForceConvexHull(Points* array, int arraySize){
     //dec vars
     int numberOfPoints = 0;
-    
     debug("arraySize: %d\n", arraySize/2);
     //nested loop to find the next point
     for(int x=0; x<arraySize/2; x++){
         for(int y=0; y<arraySize/2; y++){
-            //if their are the same points skip
-            if(x == y){
-                continue;
-            }//end if
-
-            debug("check Points %d\n", x);
-            
-            Points* point1 = &array[x];
-            Points* point2 = &array[y];
-
+            //dec vars
+            int side = 0;
+            //loop the last points
             for(int k=0; k<arraySize/2; k++){
-                if(k == x || k == y){
-                    continue;
-                }//end if
+                //assign the three points
+                Points* point1 = &array[x];
+                Points* point2 = &array[y];
+                Points* point3 = &array[k];
 
                 double lineValue = whichSideOfLine(point1, point2, &array[k]);
-                if(lineValue < 0){
-                    numberOfPoints++;
-                    debug("%d ", numberOfPoints);
-                    break;
+
+                if (lineValue > 0) {
+                    if (side == -1) { // detected point on wrong side, skip point
+                        break;
+                    }
+                    side = 1;
+                }
+
+                if (lineValue < 0) {
+                    if (side == 1) { // detected point on wrong side, skip point
+                        break;
+                    }
+                    side = -1;
+                }
+
+                // check if extreme
+                if (lineValue == 0) {
+                    if ((point3->x > point2->x && point3->x > point1->x) || (point3->x < point2->x && point3->x > point1->x) || 
+                        (point3->y < point2->y && point3->y < point1->y) || (point3->y > point2->y && point3->y > point1->y)){
+                        break;
+                    }//end if
+                }//end if
+
+                if (k == (arraySize/2)-1) { // every point successfull
+                    if (side != 0) {
+                        if (x != y) {
+                            numberOfPoints++;
+                            printf("Found Point: %.1f, %.1f\n", point1->x, point1->y);
+                            x = x + 1;
+                            y = y + 1;
+                        }//end if
+                    }//end if
                 }//end if
             }//end for
         }//end for
     }//end for
-    debug("\n");
     return numberOfPoints;
 }//end func
 
