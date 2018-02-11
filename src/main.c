@@ -128,13 +128,13 @@ void loadData2(Instance* vars){
     Points* array = malloc(sizeof(Points)*arraySize);
 
     //loop until the end of file
-    FILE* filePointer = fopen("./assets/data_2_a2.txt", "r");
-    printf("Loading data 1...\n");
+    FILE* filePointer = fopen("./assets/data2.txt", "r");
+    printf("Loading data 2...\n");
     for(int x=0; x<(arraySize/2); x++){
         fscanf(filePointer, "%lf %lf", &array->x, &array->y);
     }//end for
     fclose(filePointer);
-    printf("Data 1 loaded\n");
+    printf("Data 2 loaded\n");
     vars->array2 = array;
     vars->arraySize2 = arraySize;
 }//end func
@@ -228,6 +228,8 @@ int bruteForceConvexHull(Points* array, int arraySize){
             if(x == y){
                 continue;
             }//end if
+
+            debug("check Points %d\n", x);
             
             Points* point1 = &array[x];
             Points* point2 = &array[y];
@@ -245,7 +247,6 @@ int bruteForceConvexHull(Points* array, int arraySize){
                 }//end if
             }//end for
         }//end for
-        debug("check Points %d\n", x);
     }//end for
     debug("\n");
     return numberOfPoints;
