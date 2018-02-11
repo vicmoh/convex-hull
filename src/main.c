@@ -137,10 +137,10 @@ int recurseMergeSort(int array[], int tempArray[], int left, int right){
 
         //coutn the inversion and use recursion to merge array
         inversionCount  = recurseMergeSort(array, tempArray, left,middle);
-        inversionCount += recurseMergeSort(array, tempArray, middle+1, right);
+        inversionCount = inversionCount + recurseMergeSort(array, tempArray, middle+1, right);
 
         //merge the to a tempArray which will sort it
-        inversionCount += merge(array, tempArray, left, middle+1, right);
+        inversionCount = inversionCount + merge(array, tempArray, left, middle+1, right);
     }//end if
     return inversionCount;
 }//end func
