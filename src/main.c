@@ -227,7 +227,6 @@ int bruteForceConvexHull(Points* array, int arraySize){
             Points* point1 = &array[x];
             Points* point2 = &array[y];
 
-            bool allPointsOnTheRight = true;
             for(int k=0; k<arraySize; k++){
                 if(k == x || k == y){
                     continue;
@@ -235,7 +234,6 @@ int bruteForceConvexHull(Points* array, int arraySize){
 
                 double lineValue = whichSideOfLine(point1, point2, &array[k]);
                 if(lineValue < 0){
-                    allPointsOnTheRight = false;
                     break;
                 }//end if
 
@@ -297,7 +295,16 @@ int main(int argc, char** argv){
             printf("Total execution time: %f seconds\n", timeSpent);
         }else if(strcmp(menu, "3") == 0){
             //brute forces convex hull
-            
+            //devide and conquer
+            double start = 0, stop = 0, timeSpent = 0;
+            int totalPoints = 0;
+            printf("calculating...\n");
+            start = clock();
+            totalPoints = bruteForceConvexHull(vars->array2, vars->arraySize2);
+            stop = clock();
+            timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
+            printf("Total number of points: %d\n", totalPoints);
+            printf("Total execution time: %f seconds\n", timeSpent);
         }else if(strcmp(menu, "4") == 0){
             //divide and conquer convex hull
         }else if(strcmp(menu, "5") == 0){
