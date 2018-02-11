@@ -59,6 +59,8 @@ int bruteForceConvexHull(Points* array, int arraySize);
 
 Instance* initInstance(){
     Instance* newVars = calloc(1, sizeof(Instance));
+    newVars->array1 = NULL;
+    newVars->array2 = NULL;
     newVars->arraySize1 = 0;
     newVars->arraySize2 = 0;
     return newVars;
@@ -330,7 +332,6 @@ int main(int argc, char** argv){
             printf("------------------------------------\n");
         }else if(strcmp(menu, "3") == 0){
             //brute forces convex hull
-            //devide and conquer
             double start = 0, stop = 0, timeSpent = 0;
             int totalPoints = 0;
             printf("calculating...\n");
