@@ -52,6 +52,7 @@ int merge(int array[], int tempArray[], int left, int middle, int right);
 //brute force convex hull 
 double whichSideOfLine(Points* point1, Points* point2, Points* pointSubject);
 int bruteForceConvexHull(Points* array, int arraySize);
+//divide and conquer convex hull
 
 /***********************************************************
  * Functions
@@ -276,6 +277,40 @@ int bruteForceConvexHull(Points* array, int arraySize){
         }//end for
     }//end for
     return numberOfPoints;
+}//end func
+
+int divideAndConquerConvexHull(Points* points, int arraySize){
+    //dec vars
+    int numberOfPoints = 0;
+    Points* hull = NULL;
+    Points* left = NULL;
+    Points* right = NULL;
+    Points* mostLeft = malloc(sizeof(Points));
+    Points* mostRight = malloc(sizeof(Points));
+    //init the most left and right to 0
+    mostLeft->x = 0;
+    mostLeft->y = 0;
+    mostRight->x = 0;
+    mostRight->y = 0;
+    mostLeft->x = points[0].x;
+    mostRight->x = points[0].x;
+
+    //find the most right and left of the points
+    for(int x=0; x<(arraySize/2); x++){
+        if(points[x].x < mostLeft->x){
+            mostLeft->x = points[x].x;
+            mostLeft->y = points[x].y;
+        }//end if
+        if(points[x].x > mostRight->x){
+            mostRight->x = points[x].x;
+            mostRight->y = points[x].y;
+        }//end if
+    }//end for
+
+    //copy into the left and right sections
+    for(int x=0; x<(arraySize/2); x++){
+        
+    }//end for
 }//end func
 
 /***********************************************************
