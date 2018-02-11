@@ -15,6 +15,8 @@
 #include <math.h>
 #include <sys/time.h>
 #include <time.h>
+#include <limits.h>
+#include <assert.h>
 //macros
 #define DEBUG false
 #define debug if(DEBUG)printf
@@ -343,13 +345,56 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
     free(hullPoints);
     free(leftPoints);
     free(rightPoints);
-    free(mostLeft);
-    free(mostRight);
     return numberOfPoints;
 }//end func
 
-void findHull(Points* atMostPointArray, Points* atMostPoint, Points* hullPoints){
+void findHull(Points* pointArray, Points* p, Points* q, Points* hullPoints){
+    //dec vars
+    Points* farthest = malloc(sizeof(Points));
+    Points* upper = malloc(sizeof(Points));
+    Points* lower = malloc(sizeof(Points));
+    int maxHeight = 0;
+    if(GET_ARRAY_SIZE(pointArray) == 0){
+        return;
+    }//end if
     
+    double distance = sqrt((q->x - p->x) * (q->x - p->x) + (q->y - p->y) * (q->y - p->y));
+    //saerch for the point that extreme from the segment line
+    for(int x=0; x<GET_ARRAY_SIZE(pointArray);x++){
+        double absolute = fabs(p->x * q->y + pointArray[x].x * p->y + q->x * pointArray[x].y - pointArray[x].x * q->y - q->x * p->y - p->x * pointArray[x].y);
+        double height = absolute / distance;
+        if(height > maxHeight){
+            maxHeight = height;
+            farthest->x = pointArray[x].x;
+            farthest->y = pointArray[x].y;
+        }//end if
+    }//end for
+    
+    //append convex hull with the point that is the farthest
+    addPoints(hullPoints, farthest->x, farthest->y);
+    double a, b, c, lineValue;
+    for(int x=0; x<GET_ARRAY_SIZE(pointArray);x++){
+        a = ((q->y - farthest->y) * (pointArray[x].x - farthest->x) + (farthest->x - q->x) * (pointArray[x].y - farthest->y)) /
+            ((q->y - farthest->y) * (p->x - farthest->x) + (farthest->x - q->x) * (p->y - farthest->y));
+        b = ((farthest->y - p->y) * (pointArray[x].x - farthest->x) + (p->x - farthest->x) * (pointArray[x].y - farthest->y)) /
+            ((q->y - farthest->y) * (p->x - farthest->x) + (farthest->x - q->x) * (p->y - farthest->y));
+        c = 1.0f - a - b;
+        
+        //check if it is outside of the triangle
+        if(!(a + 0.00001 > 0 && b + 0.00001 > 0 && c + 0.00001 > 0)){
+            lineValue = whichSideOfLine(p, &pointArray[x], farthest);
+            if (lineValue - 0.0000001 > 0) {
+                addPoints(upper, pointArray[x].x, pointArray[x].y);
+            }//end if
+            if (lineValue + 0.0000001 < 0) {
+                addPoints(lower, pointArray[x].x, pointArray[x].y);
+            }//end if
+        }//end if
+    }//end for
+
+    //recurse
+    findHull(upper, p, farthest, hullPoints);
+    findHull(lower, farthest, q, hullPoints);
 }//end func
 
 /***********************************************************
