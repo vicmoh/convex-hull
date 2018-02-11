@@ -99,155 +99,73 @@ void loadData2(Instance* vars){
     vars->arraySize2 = arraySize;
 }//end func
 
-/*
-int merge(int array[], int tempArray[], int left, int middle, int right){
-    //dec a tempArray vars
-    int inversionCount = 0;
-    int rightIndex = left;
-    int leftIndex = left;//for teh left and right array index section
-    int middleIndex = middle;//for the right array index section 
-    //combined the two sections
-    while ((leftIndex <= middle - 1) && (middleIndex <= right)){
-        if (array[leftIndex] <= array[middleIndex]){
-            //iterate to the next index
-            rightIndex = rightIndex + 1;
-            leftIndex = leftIndex + 1;
-            //added it to the temp array
-            tempArray[rightIndex] = array[leftIndex];
-        }else{
-            //iterate to the next index
-            rightIndex = rightIndex + 1;
-            leftIndex = leftIndex + 1;
-            //added to the temp array
-            tempArray[rightIndex] = array[middleIndex];
-            inversionCount += (middle - leftIndex);
-        }//end if
-    }//end while
-
-    //copy the left section of the remaining element of the arrayay
-    while(leftIndex <= middle - 1){
-        //iterate to the next index
-        rightIndex = rightIndex + 1;
-        leftIndex = leftIndex + 1;
-        //added to the temp array
-        tempArray[rightIndex] = array[leftIndex];
-    }//end while
-
-    //copy again, but this time do to the right
-    while(middleIndex <= right){
-        //iterate to the next index
-        rightIndex = rightIndex + 1;
-        leftIndex = leftIndex + 1;
-        //added to the temp array
-        tempArray[rightIndex] = array[middleIndex];
-    }//end while
-
-    //copy to the originated array
-    for(leftIndex=left; leftIndex <= right; leftIndex++){
-        array[leftIndex] = tempArray[leftIndex];
-    }//end for
-
-    //return the inversion count
-    //free(tempArray);
-    return inversionCount;
-}//end func
-
-int recurseMergeSort(int array[], int tempArray[], int left, int right){
-    //a recursion function that sorts using merge sort
-    int middle = 0;
-    int inversionCount = 0;
-    if(right > left){
-        //divide the array into 2
-        middle = (left + right)/2;
-        //sum the inversion for left and right sections
-        inversionCount = recurseMergeSort(array, tempArray, left, middle);
-        inversionCount = inversionCount + recurseMergeSort(array, tempArray, middle+1, right);
-        inversionCount = inversionCount + merge(array, tempArray, left, middle+1, right);
-    }//end if
-    return inversionCount;
-}//end func
-
-int mergeSort(int array[], int arraySize){
-    //this function sort the input using divide conquer
-    int* tempArray = malloc(sizeof(int)*arraySize);
-    //int tempArray[arraySize];
-    return recurseMergeSort(array, tempArray, 0, arraySize - 1);
-}//end func*/
-
-int  _mergeSort(int arr[], int temp[], int left, int right);
+int  recurseMergeSort(int arr[], int temp[], int left, int right);
 int merge(int arr[], int temp[], int left, int mid, int right);
  
 /* This function sorts the input array and returns the
    number of inversions in the array */
-int mergeSort(int arr[], int array_size)
-{
-    int *temp = (int *)malloc(sizeof(int)*array_size);
-    return _mergeSort(arr, temp, 0, array_size - 1);
+int mergeSort(int arr[], int array_size){
+    int *temp = malloc(sizeof(int)*array_size);
+    return recurseMergeSort(arr, temp, 0, array_size - 1);
 }
  
 /* An auxiliary recursive function that sorts the input array and
   returns the number of inversions in the array. */
-int _mergeSort(int arr[], int temp[], int left, int right)
-{
-  int mid, inv_count = 0;
-  if (right > left)
-  {
-    /* Divide the array into two parts and call _mergeSortAndCountInv()
-       for each of the parts */
-    mid = (right + left)/2;
- 
-    /* Inversion count will be sum of inversions in left-part, right-part
-      and number of inversions in merging */
-    inv_count  = _mergeSort(arr, temp, left, mid);
-    inv_count += _mergeSort(arr, temp, mid+1, right);
- 
-    /*Merge the two parts*/
-    inv_count += merge(arr, temp, left, mid+1, right);
-  }
-  return inv_count;
-}
+int recurseMergeSort(int arr[], int temp[], int left, int right){
+    int mid, inv_count = 0;
+    if (right > left){
+        /* Divide the array into two parts and call _mergeSortAndCountInv()
+            for each of the parts */
+        mid = (right + left)/2;
+
+        /* Inversion count will be sum of inversions in left-part, right-part
+            and number of inversions in merging */
+        inv_count  = recurseMergeSort(arr, temp, left, mid);
+        inv_count += recurseMergeSort(arr, temp, mid+1, right);
+
+        /*Merge the two parts*/
+        inv_count += merge(arr, temp, left, mid+1, right);
+    }//end if
+    return inv_count;
+}//end func
  
 /* This funt merges two sorted arrays and returns inversion count in
    the arrays.*/
-int merge(int arr[], int temp[], int left, int mid, int right)
-{
-  int i, j, k;
-  int inv_count = 0;
- 
-  i = left; /* i is index for left subarray*/
-  j = mid;  /* j is index for right subarray*/
-  k = left; /* k is index for resultant merged subarray*/
-  while ((i <= mid - 1) && (j <= right))
-  {
-    if (arr[i] <= arr[j])
-    {
-      temp[k++] = arr[i++];
-    }
-    else
-    {
-      temp[k++] = arr[j++];
- 
-     /*this is tricky -- see above explanation/diagram for merge()*/
-      inv_count = inv_count + (mid - i);
-    }
-  }
- 
-  /* Copy the remaining elements of left subarray
-   (if there are any) to temp*/
-  while (i <= mid - 1)
+int merge(int arr[], int temp[], int left, int mid, int right){
+    int i, j, k;
+    int inv_count = 0;
+
+    i = left; /* i is index for left subarray*/
+    j = mid;  /* j is index for right subarray*/
+    k = left; /* k is index for resultant merged subarray*/
+    while ((i <= mid - 1) && (j <= right)){
+        if (arr[i] <= arr[j]){
+            temp[k++] = arr[i++];
+        }else{
+            temp[k++] = arr[j++];
+
+            /*this is tricky -- see above explanation/diagram for merge()*/
+            inv_count = inv_count + (mid - i);
+        }//end if
+    }//end while
+
+    /* Copy the remaining elements of left subarray
+    (if there are any) to temp*/
+    while (i <= mid - 1)
     temp[k++] = arr[i++];
- 
-  /* Copy the remaining elements of right subarray
-   (if there are any) to temp*/
-  while (j <= right)
+
+    /* Copy the remaining elements of right subarray
+    (if there are any) to temp*/
+    while (j <= right)
     temp[k++] = arr[j++];
- 
-  /*Copy back the merged elements to original array*/
-  for (i=left; i <= right; i++)
+
+    /*Copy back the merged elements to original array*/
+    for (i=left; i <= right; i++)
     arr[i] = temp[i];
- 
-  return inv_count;
-}
+
+    //return
+    return inv_count;
+}//end func
 
 int main(int argc, char** argv){
     //dec vars
