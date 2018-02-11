@@ -123,7 +123,8 @@ void loadData2(Instance* vars){
 int mergeSort(int array[], int arraySize){
     //a function wrapper for merge sort
     int *tempArray = calloc(arraySize, sizeof(int)*arraySize);
-    return recurseMergeSort(array, tempArray, 0, arraySize - 1);
+    int totalInversion = recurseMergeSort(array, tempArray, 0, arraySize - 1);
+    return totalInversion;
 }//end func
  
 int recurseMergeSort(int array[], int tempArray[], int left, int right){
@@ -136,64 +137,59 @@ int recurseMergeSort(int array[], int tempArray[], int left, int right){
         middle = (right + left)/2;
 
         //coutn the inversion and use recursion to merge array
-        inversionCount  = recurseMergeSort(array, tempArray, left,middle);
+        inversionCount  = recurseMergeSort(array, tempArray, left, middle);
         inversionCount = inversionCount + recurseMergeSort(array, tempArray, middle+1, right);
 
         //merge the to a tempArray which will sort it
-        inversionCount = inversionCount + merge(array, tempArray, left, middle+1, right);
-    }//end if
-    return inversionCount;
-}//end func
- 
-int merge(int array[], int tempArray[], int left, int middle, int right){
-    //merg the sorted section into a tempArray array and combine them
-    int inversionCount = 0;
-    int leftIndex = left; //left index for the left asub section
-    int rightIndex = middle;  //right index for the right sub section
-    int resultIndex = left; //the resulting merge index
-    
-    //loop through the array
-    while ((leftIndex <= middle - 1) && (rightIndex <= right)){
-        if (array[leftIndex] <= array[rightIndex]){
+        middle = middle + 1;
+        int leftIndex = left; //left index for the left asub section
+        int rightIndex = middle;  //right index for the right sub section
+        int resultIndex = left; //the resulting merge index
+
+        //loop through the array
+        while ((leftIndex <= middle - 1) && (rightIndex <= right)){
+            if (array[leftIndex] <= array[rightIndex]){
+                tempArray[resultIndex] = array[leftIndex];
+                //iterate the next index
+                resultIndex = resultIndex + 1;
+                leftIndex = leftIndex + 1;
+            }else{
+                tempArray[resultIndex] = array[rightIndex];
+                //iterate the next index
+                resultIndex = resultIndex + 1;
+                rightIndex = rightIndex + 1;
+                //count the inversion of the merge sort
+                inversionCount = inversionCount + (middle - leftIndex);
+            }//end if
+        }//end while
+
+        //copy the left section to the tempArray
+        while (leftIndex <= middle - 1){
+            //copy the element to temp array
             tempArray[resultIndex] = array[leftIndex];
-            //iterate the next index
+            //iterate through the next index
             resultIndex = resultIndex + 1;
             leftIndex = leftIndex + 1;
-        }else{
+        }//end while
+
+        //copy the right section to the tempArray
+        while (rightIndex <= right){
+            //copy the element to temp array
             tempArray[resultIndex] = array[rightIndex];
-            //iterate the next index
+            //iterate through the next index
             resultIndex = resultIndex + 1;
             rightIndex = rightIndex + 1;
-            //count the inversion of the merge sort
-            inversionCount = inversionCount + (middle - leftIndex);
-        }//end if
-    }//end while
+        }//end while
 
-    //copy the left section to the tempArray
-    while (leftIndex <= middle - 1){
-        //copy the element to temp array
-        tempArray[resultIndex] = array[leftIndex];
-        //iterate through the next index
-        resultIndex = resultIndex + 1;
-        leftIndex = leftIndex + 1;
-    }//end while
+        //once copied , moved the sorted section to the original array
+        for (leftIndex=left; leftIndex <= right; leftIndex++){
+            //copy the element from temp array to the original array
+            array[leftIndex] = tempArray[leftIndex];
+        }//end for
 
-    //copy the right section to the tempArray
-    while (rightIndex <= right){
-        //copy the element to temp array
-        tempArray[resultIndex] = array[rightIndex];
-        //iterate through the next index
-        resultIndex = resultIndex + 1;
-        rightIndex = rightIndex + 1;
-    }//end while
-
-    //once copied , moved the sorted section to the original array
-    for (leftIndex=left; leftIndex <= right; leftIndex++){
-        //copy the element from temp array to the original array
-        array[leftIndex] = tempArray[leftIndex];
-    }//end for
-
-    //return the inversion count
+        //return the inversion count
+        return inversionCount;
+    }//end if
     return inversionCount;
 }//end func
 
