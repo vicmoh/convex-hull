@@ -1,0 +1,113 @@
+/***********************************
+ * Name: Vicky Mohammad
+ * ID: 0895381
+ * Date: February 10, 2018
+ ***********************************/
+
+-------------------------<<<< NOTE >>>>-------------------------
+Please note that the total execution time differ depending on hardware.
+This was run on hardware:
+- Intel Core i7-4702HQ 3.2GHZ
+- NVIDIA GTX 870 3GB VRAM
+- WINDOWS 10 OPERATING SYSTEM
+
+--------------<<<< Q1a: Brute Force Inversion >>>>--------------
+
+An inversion count in an array dteremines how far or close, and array is
+being sorted. If the array of already sorted the inversion count would be
+0, hence the higher the number, the more numbers that is needed to be sorted
+For brute force inversion, I use two nested for loop to be able to compare
+every element. If for every element of A[i] > A[j] for i < j, then I use a
+counter that would add 1 to the total count whenever A[i] > A[j].
+Hence, the time complexity would be O(n^2). Please note that the total 
+execution time differ depending on hardware.
+
+Total inversion: 623897407
+Total execution time: 6.984375 seconds
+
+-----------<<<< Q1b: Divide and Conquer Inversion >>>>----------
+
+For counting the inversion using divide and conquer, I use mergesort and modify
+the function to return the total inversion counts. Rather than bruteforce, suppose
+we know the number of the left half and the other right half of the array, we would have
+to think where the inversion are not accounted for. Since it is using merge sort,
+We must also count the inversion during the merge step of the merge sort. Hence, to get 
+the number of inversion, I added all the total inversion from the left sub array,
+right sub array and as well as the merge. For the merge process, let "leftIndex" is for 
+left index array, and "rightIndex" as the right index of the right array. For any step
+for the merge if array[leftIndex] > array[rightIndex] then there (middle - leftIndex)
+inversion, since left and right sub array is already sorted, hence all the remaining
+elements in left sub array (array[leftIndex+1],array[leftIndex+2], ... array[middle])
+is going to be greater than array[rightIndex]. Since it is using merge sort the 
+time complexity would be O(nlogn) by using divide and conquer. Please note that the total 
+execution time differ depending on hardware.
+
+Total Inversion: 623897407
+Total execution time: 0.000001 to 0.015625 seconds
+
+-------------<<<< Q2a: Brute Force Convex Hull >>>>-------------
+
+
+
+Found Point: 2147.1, 1826.1
+Found Point: 2143.7, 2115.4
+Found Point: 1858.6, 2146.9
+Found Point: 2146.4, 2024.5
+Found Point: 2135.3, 2133.6
+Found Point: 1.1, 1705.6
+Found Point: 2147.3, 1603.2
+Found Point: 2110.5, 4.1
+Found Point: 607.7, 1.2
+Found Point: 3.0, 2144.1
+Found Point: 2068.0, 1.9
+Found Point: 1298.6, 2147.3
+Found Point: 1962.2, 1.6
+Found Point: 193.9, 2147.0
+Found Point: 137.8, 2146.6
+Found Point: 3.2, 13.9
+Found Point: 2147.4, 62.0
+Found Point: 2147.3, 7.4
+Found Point: 547.7, 1.2
+Found Point: 2147.5, 165.4
+Found Point: 1.1, 331.7
+Found Point: 2111.1, 2146.7
+Found Point: 12.3, 2.4
+Found Point: 438.8, 2147.5
+
+Total number of points: 24
+Total execution time: 80.562500 seconds
+----------------------------------------------------------------
+
+----------<<<< Q2b: Divide and Conquer Convex hull >>>>---------
+Found point: 1.1, 1705.6
+Found point: 2147.5, 165.4
+Found point: 2135.3, 2133.6
+Found point: 3.0, 2144.1
+Found point: 2111.1, 2146.7
+Found point: 438.8, 2147.5
+Found point: 137.8, 2146.6
+Found point: 193.9, 2147.0
+Found point: 1298.6, 2147.3
+Found point: 1858.6, 2146.9
+Found point: 2146.4, 2024.5
+Found point: 2143.7, 2115.4
+Found point: 2147.3, 1603.2
+Found point: 2147.1, 1826.1
+Found point: 12.3, 2.4
+Found point: 2110.5, 4.1
+Found point: 2147.3, 7.4
+Found point: 2147.4, 62.0
+Found point: 1962.2, 1.6
+Found point: 2068.0, 1.9
+Found point: 547.7, 1.2
+Found point: 607.7, 1.2
+Found point: 1.1, 331.7
+Found point: 3.2, 13.9
+----------------------------------------------------------------
+Total number of points: 24
+Total execution time: 0.000001 to 0.015625 seconds
+----------------------------------------------------------------
+
+Divide and Conquer Convex Hull 
+
+
