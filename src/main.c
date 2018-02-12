@@ -404,7 +404,7 @@ void findHull(Points* pointArray, Points* p, Points* q, Points* hullPoints){
         
         //check if it is outside of the triangle
         if(!(a + 0.00001 > 0 && b + 0.00001 > 0 && c + 0.00001 > 0)){
-            lineValue = whichSideOfLine(&p[0], &farthest[0], &pointArray[x]);
+            lineValue = whichSideOfLine(&p[0], &pointArray[x], &farthest[0]);
             if (lineValue - 0.0000001 > 0) {
                 addPoints(upper, pointArray[x].x, pointArray[x].y);
             }//end if
