@@ -248,7 +248,7 @@ int bruteForceConvexHull(Points* array, int arraySize){
                 Points* point3 = &array[z];
 
                 //checking the side of the line, if wrong section skip
-                lineValue = getSideOfLine(point1, point2, &array[z]);
+                lineValue = getSideOfLine(point1, point2, point3);
                 if(lineValue < 0){
                     //check if its the right section of checking points, if wrong skip
                     if(section > 0){

@@ -1,0 +1,95 @@
+
+/***********************************
+ * Vicky Mohammad
+ * 0895381
+ ***********************************/
+
+--------------<<<< Q1a: Brute Force Inversion >>>>--------------
+Total inversion: 623897407
+Total execution time: 6.984375 seconds
+----------------------------------------------------------------
+
+-----------<<<< Q1b: Divide and Conquer Inversion >>>>----------
+Total Inversion: 623897407
+Total execution time: 0.000001 seconds
+----------------------------------------------------------------
+
+-------------<<<< Q2a: Brute Force Convex Hull >>>>-------------
+Found Point: 2147.1, 1826.1
+Found Point: 2143.7, 2115.4
+Found Point: 1858.6, 2146.9
+Found Point: 2146.4, 2024.5
+Found Point: 2135.3, 2133.6
+Found Point: 1.1, 1705.6
+Found Point: 2147.3, 1603.2
+Found Point: 2110.5, 4.1
+Found Point: 607.7, 1.2
+Found Point: 3.0, 2144.1
+Found Point: 2068.0, 1.9
+Found Point: 1298.6, 2147.3
+Found Point: 1962.2, 1.6
+Found Point: 193.9, 2147.0
+Found Point: 137.8, 2146.6
+Found Point: 3.2, 13.9
+Found Point: 2147.4, 62.0
+Found Point: 2147.3, 7.4
+Found Point: 547.7, 1.2
+Found Point: 2147.5, 165.4
+Found Point: 1.1, 331.7
+Found Point: 2111.1, 2146.7
+Found Point: 12.3, 2.4
+Found Point: 438.8, 2147.5
+----------------------------------------------------------------
+Total number of points: 24
+Total execution time: 80.562500 seconds
+----------------------------------------------------------------
+
+----------<<<< Q2b: Divide and Conquer Convex hull >>>>---------
+Found point: 1.1, 1705.6
+Found point: 2147.5, 165.4
+Found point: 2135.3, 2133.6
+Found point: 3.0, 2144.1
+Found point: 2111.1, 2146.7
+Found point: 438.8, 2147.5
+Found point: 137.8, 2146.6
+Found point: 193.9, 2147.0
+Found point: 1298.6, 2147.3
+Found point: 1858.6, 2146.9
+Found point: 2146.4, 2024.5
+Found point: 2143.7, 2115.4
+Found point: 2147.3, 1603.2
+Found point: 2147.1, 1826.1
+Found point: 12.3, 2.4
+Found point: 2110.5, 4.1
+Found point: 2147.3, 7.4
+Found point: 2147.4, 62.0
+Found point: 1962.2, 1.6
+Found point: 2068.0, 1.9
+Found point: 547.7, 1.2
+Found point: 607.7, 1.2
+Found point: 1.1, 331.7
+Found point: 3.2, 13.9
+----------------------------------------------------------------
+Total number of points: 24
+Total execution time: 0.015625 seconds
+----------------------------------------------------------------
+
+Divide and Conquer Convex Hull 
+
+The asymptotic running time of this algorithm is determined through reccurrence. Ignoring the calls
+made through recursion and using the input of size n, we must consider the time that is required to execute
+all aspects of the algorithm. The time also takes into partitioning the point which is set, consideration computing the two tangents,
+and finally getting the final result. First and last steps of this algorithm is done with 0(n) time complexity, if we were to believe 
+array/linked list was used for the hull vertices. How these tangents are computed in O(n) time? 
+
+T(n) = 
+1 if n<=3
+else
+n + 2T (n/2)
+
+This reccurence is similar to what is found in the Mergesort algorithm. 
+It solves to T(n) 2 O(nlogn) 
+
+Now to show how to compute the two tangents. To begin with, when the two points, sets A and B, are separated through a vertical 
+line it eventually simplifies the procedure to compute the tangents, if we are to believe there are no double x coordinates. The upper 
+tangent is symmetric. The lower tangent is computed using a simple "walking" algorithm. A is set at the right-most side 
