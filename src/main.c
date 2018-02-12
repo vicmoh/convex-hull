@@ -315,42 +315,42 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
     Points* mostLeft = initPoints();
     Points* mostRight = initPoints();
     //init the most left and right to 0
-    mostLeft->x = points[0].x;
-    mostRight->x = points[0].x;
+    mostLeft[0].x = points[0].x;
+    mostRight[0].x = points[0].x;
 
     //find the most right and left of the points
     for(int x=0; x<(arraySize/2); x++){
-        if(points[x].x < mostLeft->x){
-            mostLeft->x = points[x].x;
-            mostLeft->y = points[x].y;
+        if(points[x].x < mostLeft[0].x){
+            mostLeft[0].x = points[x].x;
+            mostLeft[0].y = points[x].y;
         }//end if
-        if(points[x].x > mostRight->x){
-            mostRight->x = points[x].x;
-            mostRight->y = points[x].y;
+        if(points[x].x > mostRight[0].x){
+            mostRight[0].x = points[x].x;
+            mostRight[0].y = points[x].y;
         }//end if
     }//end for
 
     //copy into the left and right sections
     for(int x=0; x<(arraySize/2); x++){
-        double lineValue = whichSideOfLine(mostLeft, mostRight, points);//not sure if im doing it 
+        double lineValue = whichSideOfLine(mostLeft, mostRight, &points[x]);//not sure if im doing it 
         //add to left
-        if(lineValue + 0.00000001 < 0){
+        if(lineValue + 0.0000001 < 0){
             addPoints(leftPoints, points[x].x, points[x].y);
         }//end if
-        if(lineValue - 0.00000001 > 0){
+        if(lineValue - 0.0000001 > 0){
             addPoints(rightPoints, points[x].x, points[x].y);
         }//end if
     }//end for
 
     //add and recurse
-    addPoints(hullPoints, mostLeft->x, mostLeft->y);
-    addPoints(hullPoints, mostRight->x, mostRight->y);
+    addPoints(hullPoints, mostLeft[0].x, mostLeft[0].y);
+    addPoints(hullPoints, mostRight[0].x, mostRight[0].y);
     findHull(leftPoints, mostLeft, mostRight, hullPoints);
     findHull(rightPoints, mostRight, mostLeft, hullPoints);
 
     //count the number of points of the convex hull
-    for(int x=0; x<hullPoints->size;x++){
-        debug("Fount points: %lf %lf\n", hullPoints[x].x, hullPoints[x].y);
+    for(int x=0; x<hullPoints[0].size;x++){
+        debug("Fount points: %.1lf %.1lf\n", hullPoints[x].x, hullPoints[x].y);
         //debug("WENT TO NUMBER OF POINTS FOR LOOP\n");
         numberOfPoints++;
     }//end 7for
@@ -365,37 +365,37 @@ void findHull(Points* pointArray, Points* p, Points* q, Points* hullPoints){
     Points* upper = initPoints();
     Points* lower = initPoints();
     int maxHeight = 0;
-    if(pointArray->size == 0){
+    if(pointArray[0].size == 0){
         return;
     }//end if
     
-    double num1 = (q->x - p->x) * (q->x - p->x);
-    double num2 = (q->y - p->y) * (q->y - p->y);
+    double num1 = (q[0].x - p[0].x) * (q[0].x - p[0].x);
+    double num2 = (q[0].y - p[0].y) * (q[0].y - p[0].y);
     double distance = sqrt( num1 + num2 );
     //saerch for the point that extreme from the segment line
     for(int x=0; x<pointArray[0].size;x++){
-        double absolute = fabs(p->x * q->y + pointArray[x].x * p->y + q->x * pointArray[x].y - pointArray[x].x * q->y - q->x * p->y - p->x * pointArray[x].y);
+        double absolute = fabs(p[0].x * q[0].y + pointArray[x].x * p[0].y + q[0].x * pointArray[x].y - pointArray[x].x * q[0].y - q[0].x * p[0].y - p[0].x * pointArray[x].y);
         double height = absolute / distance;
         if(height > maxHeight){
             maxHeight = height;
-            farthest->x = pointArray[x].x;
-            farthest->y = pointArray[x].y;
+            farthest[0].x = pointArray[x].x;
+            farthest[0].y = pointArray[x].y;
         }//end if
     }//end for
     
     //append convex hull with the point that is the farthest
-    addPoints(hullPoints, farthest->x, farthest->y);
+    addPoints(hullPoints, farthest[0].x, farthest[0].y);
     double a, b, c, lineValue;
     for(int x=0; x<pointArray[0].size;x++){
-        a = ((q->y - farthest->y) * (pointArray[x].x - farthest->x) + (farthest->x - q->x) * (pointArray[x].y - farthest->y)) /
-            ((q->y - farthest->y) * (p->x - farthest->x) + (farthest->x - q->x) * (p->y - farthest->y));
-        b = ((farthest->y - p->y) * (pointArray[x].x - farthest->x) + (p->x - farthest->x) * (pointArray[x].y - farthest->y)) /
-            ((q->y - farthest->y) * (p->x - farthest->x) + (farthest->x - q->x) * (p->y - farthest->y));
-        c = 1.0f - a - b;
+        a = ((q[0].y - farthest[0].y) * (pointArray[x].x - farthest[0].x) + (farthest[0].x - q[0].x) * (pointArray[x].y - farthest[0].y)) /
+            ((q[0].y - farthest[0].y) * (p[0].x - farthest[0].x) + (farthest[0].x - q[0].x) * (p[0].y - farthest[0].y));
+        b = ((farthest[0].y - p[0].y) * (pointArray[x].x - farthest[0].x) + (p[0].x - farthest[0].x) * (pointArray[x].y - farthest[0].y)) /
+            ((q[0].y - farthest[0].y) * (p[0].x - farthest[0].x) + (farthest[0].x - q[0].x) * (p[0].y - farthest[0].y));
+        c = 1 - a - b;
         
         //check if it is outside of the triangle
-        if(!(a + 0.00001 > 0 && b + 0.00001 > 0 && c + 0.00001 > 0)){
-            lineValue = whichSideOfLine(p, &pointArray[x], farthest);
+        if((a + 0.0000001 > 0 && b + 0.0000001 > 0 && c + 0.0000001 > 0) == false){
+            lineValue = whichSideOfLine(p, farthest, &pointArray[x]);
             if (lineValue - 0.0000001 > 0) {
                 addPoints(upper, pointArray[x].x, pointArray[x].y);
             }//end if
@@ -442,7 +442,7 @@ int main(int argc, char** argv){
             int totalInversion = 0;
             printf("Calculating...\n");
             start = clock();
-            totalInversion = countInversion(vars->array1, vars->arraySize1);
+            totalInversion = countInversion(vars[0].array1, vars->arraySize1);
             stop = clock();
             timeSpent = (double)(stop - start)/CLOCKS_PER_SEC;
             printf("----------<<<< RESULT >>>>----------\n");
