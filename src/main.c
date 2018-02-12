@@ -346,20 +346,14 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
 
     //add and recurse
     addPoints(hullPoints, mostLeft[0].x, mostLeft[0].y);
-    Points* p = initPoints();
-    p[0].x = mostLeft[0].x;
-    p[0].y = mostLeft[0].y;
     addPoints(hullPoints, mostRight[0].x, mostRight[0].y);
-    Points* q = initPoints();
-    q[0].x = mostRight[0].x;
-    q[0].y = mostRight[0].y;
 
-    findHull(leftPoints, p, q, hullPoints);
-    findHull(rightPoints, q, p, hullPoints);
+    findHull(leftPoints, mostLeft, mostRight, hullPoints);
+    findHull(rightPoints, mostRight, mostLeft, hullPoints);
 
     //count the number of points of the convex hull
     for(int x=0; x<hullPoints[0].size;x++){
-        debug("Fount points: %.1lf %.1lf\n", hullPoints[x].x, hullPoints[x].y);
+        printf("Fount points: %.1lf, %.1lf\n", hullPoints[x].x, hullPoints[x].y);
         //debug("WENT TO NUMBER OF POINTS FOR LOOP\n");
         numberOfPoints++;
     }//end for
@@ -368,7 +362,7 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
     return numberOfPoints;
 }//end func
 
-void findHull(Points* pointArray, Points* p, Points* q, Points* hullPoints){
+void findHull(Points* pointArray, Points* p, Points* pointB, Points* hullPoints){
     //dec vars
     double maxHeight = 0;
     Points* farthest = initPoints();
@@ -378,15 +372,15 @@ void findHull(Points* pointArray, Points* p, Points* q, Points* hullPoints){
         return;
     }//end if
     
-    double num1 = (q[0].x - p[0].x) * (q[0].x - p[0].x);
-    double num2 = (q[0].y - p[0].y) * (q[0].y - p[0].y);
+    double num1 = (pointB[0].x - p[0].x) * (pointB[0].x - p[0].x);
+    double num2 = (pointB[0].y - p[0].y) * (pointB[0].y - p[0].y);
     double distance = sqrt( num1 + num2 );
     //saerch for the point that extreme from the segment line !!!!!!!!!!
     for(int x=0; x<pointArray[0].size;x++){
-        double absolute = fabs(p[0].x * q[0].y + pointArray[x].x * p[0].y + q[0].x * pointArray[x].y - pointArray[x].x * q[0].y - q[0].x * p[0].y - p[0].x * pointArray[x].y);
-        double height = absolute / distance;
-        if(height > maxHeight){
-            maxHeight = height;
+        double absolute = fabs(p[0].x * pointB[0].y + pointArray[x].x * p[0].y + pointB[0].x * pointArray[x].y - pointArray[x].x * pointB[0].y - pointB[0].x * p[0].y - p[0].x * pointArray[x].y);
+        double currentHeight = absolute / distance;
+        if(currentHeight > maxHeight){
+            maxHeight = currentHeight;
             farthest[0].x = pointArray[x].x;
             farthest[0].y = pointArray[x].y;
         }//end if
@@ -396,14 +390,14 @@ void findHull(Points* pointArray, Points* p, Points* q, Points* hullPoints){
     addPoints(hullPoints, farthest[0].x, farthest[0].y);
     double a, b, c, lineValue;
     for(int x=0; x<pointArray[0].size;x++){
-        a = ((q[0].y - farthest[0].y) * (pointArray[x].x - farthest[0].x) + (farthest[0].x - q[0].x) * (pointArray[x].y - farthest[0].y)) /
-            ((q[0].y - farthest[0].y) * (p[0].x - farthest[0].x) + (farthest[0].x - q[0].x) * (p[0].y - farthest[0].y));
+        a = ((pointB[0].y - farthest[0].y) * (pointArray[x].x - farthest[0].x) + (farthest[0].x - pointB[0].x) * (pointArray[x].y - farthest[0].y)) /
+            ((pointB[0].y - farthest[0].y) * (p[0].x - farthest[0].x) + (farthest[0].x - pointB[0].x) * (p[0].y - farthest[0].y));
         b = ((farthest[0].y - p[0].y) * (pointArray[x].x - farthest[0].x) + (p[0].x - farthest[0].x) * (pointArray[x].y - farthest[0].y)) /
-            ((q[0].y - farthest[0].y) * (p[0].x - farthest[0].x) + (farthest[0].x - q[0].x) * (p[0].y - farthest[0].y));
+            ((pointB[0].y - farthest[0].y) * (p[0].x - farthest[0].x) + (farthest[0].x - pointB[0].x) * (p[0].y - farthest[0].y));
         c = 1 - (a + b);
         
         //check if it is outside of the triangle
-        if(!(a + 0.00001 > 0 && b + 0.00001 > 0 && c + 0.00001 > 0)){
+        if((a + 0.00001 > 0 && b + 0.00001 > 0 && c + 0.00001 > 0) == false){
             lineValue = whichSideOfLine(&p[0], &pointArray[x], &farthest[0]);
             if (lineValue - 0.0000001 > 0) {
                 addPoints(upper, pointArray[x].x, pointArray[x].y);
@@ -416,7 +410,7 @@ void findHull(Points* pointArray, Points* p, Points* q, Points* hullPoints){
 
     //recurse
     findHull(upper, p, farthest, hullPoints);
-    findHull(lower, farthest, q, hullPoints);
+    findHull(lower, farthest, pointB, hullPoints);
 }//end func
 
 /***********************************************************
