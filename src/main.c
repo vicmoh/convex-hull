@@ -18,7 +18,7 @@
 #include <assert.h>
 #include <math.h>
 //macros
-#define DEBUG true
+#define DEBUG false
 #define debug if(DEBUG)printf
 #define d debug("CHECK\n");
 
@@ -237,7 +237,7 @@ int bruteForceConvexHull(Points* array, int arraySize){
     for(int x=0; x<arraySize/2; x++){
         for(int y=0; y<arraySize/2; y++){
             //dec vars
-            int side = 0;
+            int section = 0;
             //loop the last points
             for(int k=0; k<arraySize/2; k++){
                 //assign the three points
@@ -249,18 +249,18 @@ int bruteForceConvexHull(Points* array, int arraySize){
 
                 if (lineValue > 0) {
                     //check if its the right side of checking points, if wrong skip
-                    if (side == -1) {
+                    if (section == -1) {
                         break;
                     }//end if
-                    side = 1;
+                    section = 1;
                 }//endd if
 
                 if (lineValue < 0) {
-                    //check if its the right side of checking points, if wrong skip
-                    if (side == 1) {
+                    //check if its the right section of checking points, if wrong skip
+                    if (section == 1) {
                         break;
                     }//end if
-                    side = -1;
+                    section = -1;
                 }//end if
 
                 //checking extreme
@@ -272,9 +272,9 @@ int bruteForceConvexHull(Points* array, int arraySize){
                 }//end if
                 
                 //when every point is successful
-                if (k == (arraySize/2)-1) {
-                    if (side != 0) {
-                        if (x != y) {
+                if(k == (arraySize/2)-1){
+                    if(section != 0){
+                        if(x != y){
                             numberOfPoints++;
                             printf("Found Point: %.1f, %.1f\n", point1->x, point1->y);
                             x = x + 1;
@@ -334,26 +334,26 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
 
     //copy into the left and right sections
     for(int x=0; x<(arraySize/2); x++){
-        double lineValue = whichSideOfLine(&mostLeft[0], &mostRight[0], &points[x]);//not sure if im doing it 
-        //add to left
-        if(lineValue +  0.00000001 < 0){
-            addPoints(leftPoints, points[x].x, points[x].y);
-        }//end if
-        if(lineValue - 0.00000001 > 0){
+        double lineValue = whichSideOfLine(&mostLeft[0], &mostRight[0], &points[x]);//problem here, need to be fix
+        //add to right
+        if(lineValue-0.00000001 > 0){
             addPoints(rightPoints, points[x].x, points[x].y);
+        }//end if
+        //add to left
+        if(lineValue+0.00000001 < 0){
+            addPoints(leftPoints, points[x].x, points[x].y);
         }//end if
     }//end for
 
     //add and recurse
     addPoints(hullPoints, mostLeft[0].x, mostLeft[0].y);
     addPoints(hullPoints, mostRight[0].x, mostRight[0].y);
-
     findHull(leftPoints, mostLeft, mostRight, hullPoints);
     findHull(rightPoints, mostRight, mostLeft, hullPoints);
 
     //count the number of points of the convex hull
-    for(int x=0; x<hullPoints[0].size;x++){
-        printf("Fount points: %.1lf, %.1lf\n", hullPoints[x].x, hullPoints[x].y);
+    for(int x=0; x<hullPoints[0].size; x++){
+        printf("Found point: %.1lf, %.1lf\n", hullPoints[x].x, hullPoints[x].y);
         //debug("WENT TO NUMBER OF POINTS FOR LOOP\n");
         numberOfPoints++;
     }//end for
@@ -362,24 +362,27 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
     return numberOfPoints;
 }//end func
 
-void findHull(Points* pointArray, Points* p, Points* pointB, Points* hullPoints){
+void findHull(Points* pointArray, Points* pointA, Points* pointB, Points* hullPoints){
     //dec vars
-    double maxHeight = 0;
+    double a, b, c, lineValue, maxHeight = 0;
     Points* farthest = initPoints();
     Points* upper = initPoints();
     Points* lower = initPoints();
+    //exit the recursion if the array is empty
     if(pointArray[0].size == 0){
         return;
     }//end if
     
-    double num1 = (pointB[0].x - p[0].x) * (pointB[0].x - p[0].x);
-    double num2 = (pointB[0].y - p[0].y) * (pointB[0].y - p[0].y);
+    double num1 = (pointB[0].x-pointA[0].x)*(pointB[0].x-pointA[0].x);
+    double num2 = (pointB[0].y-pointA[0].y)*(pointB[0].y-pointA[0].y);
     double distance = sqrt( num1 + num2 );
     //saerch for the point that extreme from the segment line !!!!!!!!!!
-    for(int x=0; x<pointArray[0].size;x++){
-        double absolute = fabs(p[0].x * pointB[0].y + pointArray[x].x * p[0].y + pointB[0].x * pointArray[x].y - pointArray[x].x * pointB[0].y - pointB[0].x * p[0].y - p[0].x * pointArray[x].y);
+    for(int x=0; x<pointArray[0].size; x++){
+        double total = pointA[0].x * pointB[0].y + pointArray[x].x * pointA[0].y + pointB[0].x * pointArray[x].y - 
+                       pointArray[x].x * pointB[0].y - pointB[0].x * pointA[0].y - pointA[0].x * pointArray[x].y;
+        double absolute = fabs(total);
         double currentHeight = absolute / distance;
-        if(currentHeight > maxHeight){
+        if(maxHeight < currentHeight){
             maxHeight = currentHeight;
             farthest[0].x = pointArray[x].x;
             farthest[0].y = pointArray[x].y;
@@ -388,28 +391,31 @@ void findHull(Points* pointArray, Points* p, Points* pointB, Points* hullPoints)
     
     //append convex hull with the point that is the farthest
     addPoints(hullPoints, farthest[0].x, farthest[0].y);
-    double a, b, c, lineValue;
-    for(int x=0; x<pointArray[0].size;x++){
-        a = ((pointB[0].y - farthest[0].y) * (pointArray[x].x - farthest[0].x) + (farthest[0].x - pointB[0].x) * (pointArray[x].y - farthest[0].y)) /
-            ((pointB[0].y - farthest[0].y) * (p[0].x - farthest[0].x) + (farthest[0].x - pointB[0].x) * (p[0].y - farthest[0].y));
-        b = ((farthest[0].y - p[0].y) * (pointArray[x].x - farthest[0].x) + (p[0].x - farthest[0].x) * (pointArray[x].y - farthest[0].y)) /
-            ((pointB[0].y - farthest[0].y) * (p[0].x - farthest[0].x) + (farthest[0].x - pointB[0].x) * (p[0].y - farthest[0].y));
+
+    //use three points a b and c for the triangle
+    for(int x=0; x<pointArray[0].size; x++){
+        double valueA1 = (pointB[0].y-farthest[0].y) * (pointArray[x].x-farthest[0].x) + (farthest[0].x-pointB[0].x) * (pointArray[x].y-farthest[0].y);
+        double valueA2 = (pointB[0].y-farthest[0].y) * (pointA[0].x-farthest[0].x) + (farthest[0].x-pointB[0].x) * (pointA[0].y-farthest[0].y);
+        double valueB1 = (farthest[0].y-pointA[0].y) * (pointArray[x].x-farthest[0].x) + (pointA[0].x-farthest[0].x) * (pointArray[x].y-farthest[0].y);
+        double valueB2 = (pointB[0].y-farthest[0].y) * (pointA[0].x-farthest[0].x) + (farthest[0].x-pointB[0].x) * (pointA[0].y-farthest[0].y);
+        a = valueA1/valueA2;
+        b = valueB1/valueB2;
         c = 1 - (a + b);
         
         //check if it is outside of the triangle
-        if((a + 0.00001 > 0 && b + 0.00001 > 0 && c + 0.00001 > 0) == false){
-            lineValue = whichSideOfLine(&p[0], &pointArray[x], &farthest[0]);
-            if (lineValue - 0.0000001 > 0) {
-                addPoints(upper, pointArray[x].x, pointArray[x].y);
-            }//end if
-            if (lineValue + 0.0000001 < 0) {
+        if((a+0.00001 > 0 && b+0.00001 > 0 && c+0.00001 > 0) == false){
+            lineValue = whichSideOfLine(&pointA[0], &pointArray[x], &farthest[0]);
+            if (lineValue+0.0000001 < 0) {
                 addPoints(lower, pointArray[x].x, pointArray[x].y);
+            }//end if
+            if (lineValue-0.0000001 > 0) {
+                addPoints(upper, pointArray[x].x, pointArray[x].y);
             }//end if
         }//end if
     }//end for
 
-    //recurse
-    findHull(upper, p, farthest, hullPoints);
+    //recursion
+    findHull(upper, pointA, farthest, hullPoints);
     findHull(lower, farthest, pointB, hullPoints);
 }//end func
 
@@ -433,9 +439,7 @@ int main(int argc, char** argv){
         printf("2: Divide and conquer inversion\n");
         printf("3: Brute force convex hull\n");
         printf("4: Divide and conquer convexhull\n");
-        printf("5: Compare execution times of 1 and 2\n");
-        printf("6: Compare execution times of 3 and 4\n");
-        printf("7: Exit\n");
+        printf("5: Exit\n");
         printf("Enter the menu:\n");
         menu = userInput(menu);
 
@@ -492,11 +496,6 @@ int main(int argc, char** argv){
             printf("Total execution time: %f seconds\n", timeSpent);
             printf("------------------------------------\n");
         }else if(strcmp(menu, "5") == 0){
-            //compare execution times of 1 and 2
-        }else if(strcmp(menu, "4") == 0){
-        }else if(strcmp(menu, "6") == 0){
-            //compare execution times of 3 and 4
-        }else if(strcmp(menu, "7") == 0){
             //exit
             free(vars->array1);
             free(vars->array2);
@@ -504,7 +503,9 @@ int main(int argc, char** argv){
             free(menu);
             exit(0);
         }else{
+            printf("----------<<<< FEEDBACK >>>>----------\n");
             printf("Invalid input, please re-enter.\n");
+            printf("------------------------------------\n");
         }//end if
 
         //load the data again
