@@ -53,7 +53,7 @@ int mergeSort(int array[], int arraySize);
 int recurseMergeSort(int array[], int tempArray[], int left, int right);
 int merge(int array[], int tempArray[], int left, int middle, int right);
 //brute force convex hull 
-double whichSideOfLine(Points* point1, Points* point2, Points* pointSubject);
+double getSideOfLine(Points* point1, Points* point2, Points* pointSubject);
 int bruteForceConvexHull(Points* array, int arraySize);
 //divide and conquer convex hull
 Points* initPoints();
@@ -161,6 +161,7 @@ int recurseMergeSort(int array[], int tempArray[], int left, int right){
     //a recursive functions that will return that inversion
     int middle = 0;
     int inversionCount = 0;
+    int leftIndex, rightIndex, resultIndex;
     //check if right is greater than left
     if (right > left){
         //have the array divide into two parts
@@ -171,13 +172,13 @@ int recurseMergeSort(int array[], int tempArray[], int left, int right){
         inversionCount = inversionCount + recurseMergeSort(array, tempArray, middle+1, right);
 
         //merge the to a tempArray which will sort it
-        middle = middle + 1;
-        int leftIndex = left; //left index for the left asub section
-        int rightIndex = middle;  //right index for the right sub section
-        int resultIndex = left; //the resulting merge index
+        middle = middle + 1;//next middle
+        leftIndex = left; //left index for the left sub section
+        rightIndex = middle;  //right index for the right sub section
+        resultIndex = left; //the resulting merge index
 
         //loop through the array
-        while ((leftIndex <= middle - 1) && (rightIndex <= right)){
+        while ((leftIndex <= middle-1) && (rightIndex <= right)){
             if (array[leftIndex] <= array[rightIndex]){
                 tempArray[resultIndex] = array[leftIndex];
                 //iterate the next index
@@ -194,7 +195,7 @@ int recurseMergeSort(int array[], int tempArray[], int left, int right){
         }//end while
 
         //copy the left section to the tempArray
-        while (leftIndex <= middle - 1){
+        while (leftIndex <= middle-1){
             //copy the element to temp array
             tempArray[resultIndex] = array[leftIndex];
             //iterate through the next index
@@ -212,7 +213,7 @@ int recurseMergeSort(int array[], int tempArray[], int left, int right){
         }//end while
 
         //once copied , moved the sorted section to the original array
-        for (leftIndex=left; leftIndex <= right; leftIndex++){
+        for (leftIndex=left; leftIndex<=right; leftIndex++){
             //copy the element from temp array to the original array
             array[leftIndex] = tempArray[leftIndex];
         }//end for
@@ -223,7 +224,7 @@ int recurseMergeSort(int array[], int tempArray[], int left, int right){
     return inversionCount;
 }//end func
 
-double whichSideOfLine(Points* point1, Points* point2, Points* pointSubject){
+double getSideOfLine(Points* point1, Points* point2, Points* pointSubject){
     double num1 = (pointSubject->x - point1->x) * (point2->y - point1->y);
     double num2 = (pointSubject->y - point1->y) * (point2->x - point1->x);
     return num1 - num2;
@@ -231,56 +232,49 @@ double whichSideOfLine(Points* point1, Points* point2, Points* pointSubject){
 
 int bruteForceConvexHull(Points* array, int arraySize){
     //dec vars
-    int numberOfPoints = 0;
+    int section, numberOfPoints = 0;
+    double lineValue = 0;
     debug("arraySize: %d\n", arraySize/2);
     //nested loop to find the next point
     for(int x=0; x<arraySize/2; x++){
         for(int y=0; y<arraySize/2; y++){
             //dec vars
-            int section = 0;
+            section = 0;
             //loop the last points
-            for(int k=0; k<arraySize/2; k++){
+            for(int z=0; z<arraySize/2; z++){
                 //assign the three points
                 Points* point1 = &array[x];
                 Points* point2 = &array[y];
-                Points* point3 = &array[k];
+                Points* point3 = &array[z];
 
-                double lineValue = whichSideOfLine(point1, point2, &array[k]);
-
-                if (lineValue > 0) {
-                    //check if its the right side of checking points, if wrong skip
-                    if (section == -1) {
-                        break;
-                    }//end if
-                    section = 1;
-                }//endd if
-
-                if (lineValue < 0) {
+                //checking the side of the line, if wrong section skip
+                lineValue = getSideOfLine(point1, point2, &array[z]);
+                if(lineValue < 0){
                     //check if its the right section of checking points, if wrong skip
-                    if (section == 1) {
+                    if(section > 0){
                         break;
                     }//end if
                     section = -1;
-                }//end if
-
-                //checking extreme
-                if (lineValue == 0) {
-                    if ((point3->x > point2->x && point3->x > point1->x) || (point3->x < point2->x && point3->x > point1->x) || 
-                        (point3->y < point2->y && point3->y < point1->y) || (point3->y > point2->y && point3->y > point1->y)){
+                }else if (lineValue > 0){
+                    //check if its the right side of checking points, if wrong skip
+                    if(section < 0){
+                        break;
+                    }//end if
+                    section = 1;
+                }else if (lineValue == 0){
+                    //extreme
+                    if((point3->y < point2->y && point3->y < point1->y) || (point3->y > point2->y && point3->y > point1->y) || 
+                        (point3->x > point2->x && point3->x > point1->x) || (point3->x < point2->x && point3->x > point1->x)){
                         break;
                     }//end if
                 }//end if
                 
                 //when every point is successful
-                if(k == (arraySize/2)-1){
-                    if(section != 0){
-                        if(x != y){
-                            numberOfPoints++;
-                            printf("Found Point: %.1f, %.1f\n", point1->x, point1->y);
-                            x = x + 1;
-                            y = y + 1;
-                        }//end if
-                    }//end if
+                if(z == (arraySize/2)-1 && section != 0 && x != y){
+                    x = x + 1;
+                    y = y + 1;
+                    numberOfPoints++;
+                    printf("Found Point: %.1f, %.1f\n", point1->x, point1->y);
                 }//end if
             }//end for
         }//end for
@@ -334,7 +328,7 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
 
     //copy into the left and right sections
     for(int x=0; x<(arraySize/2); x++){
-        double lineValue = whichSideOfLine(&mostLeft[0], &mostRight[0], &points[x]);//problem here, need to be fix
+        double lineValue = getSideOfLine(&mostLeft[0], &mostRight[0], &points[x]);//problem here, need to be fix
         //add to right
         if(lineValue-0.00000001 > 0){
             addPoints(rightPoints, points[x].x, points[x].y);
@@ -404,7 +398,7 @@ void findHull(Points* pointArray, Points* pointA, Points* pointB, Points* hullPo
         
         //check if it is outside of the triangle
         if((a+0.00001 > 0 && b+0.00001 > 0 && c+0.00001 > 0) == false){
-            lineValue = whichSideOfLine(&pointA[0], &pointArray[x], &farthest[0]);
+            lineValue = getSideOfLine(&pointA[0], &pointArray[x], &farthest[0]);
             if (lineValue+0.0000001 < 0) {
                 addPoints(lower, pointArray[x].x, pointArray[x].y);
             }//end if
