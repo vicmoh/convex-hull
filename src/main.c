@@ -400,7 +400,7 @@ void findHull(Points* pointArray, Points* p, Points* q, Points* hullPoints){
             ((q[0].y - farthest[0].y) * (p[0].x - farthest[0].x) + (farthest[0].x - q[0].x) * (p[0].y - farthest[0].y));
         b = ((farthest[0].y - p[0].y) * (pointArray[x].x - farthest[0].x) + (p[0].x - farthest[0].x) * (pointArray[x].y - farthest[0].y)) /
             ((q[0].y - farthest[0].y) * (p[0].x - farthest[0].x) + (farthest[0].x - q[0].x) * (p[0].y - farthest[0].y));
-        c = 1.0f - (a + b);
+        c = 1 - (a + b);
         
         //check if it is outside of the triangle
         if(!(a + 0.00001 > 0 && b + 0.00001 > 0 && c + 0.00001 > 0)){
