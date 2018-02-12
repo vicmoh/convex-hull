@@ -224,7 +224,9 @@ int recurseMergeSort(int array[], int tempArray[], int left, int right){
 }//end func
 
 double whichSideOfLine(Points* point1, Points* point2, Points* pointSubject){
-    return (pointSubject->x - point1->x) * (point2->y - point1->y) - (pointSubject->y - point1->y) * (point2->x - point1->x);
+    double num1 = (pointSubject->x - point1->x) * (point2->y - point1->y);
+    double num2 = (pointSubject->y - point1->y) * (point2->x - point1->x);
+    return num1 - num2;
 }//end func
 
 int bruteForceConvexHull(Points* array, int arraySize){
@@ -332,28 +334,35 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
 
     //copy into the left and right sections
     for(int x=0; x<(arraySize/2); x++){
-        double lineValue = whichSideOfLine(mostLeft, mostRight, &points[x]);//not sure if im doing it 
+        double lineValue = whichSideOfLine(&mostLeft[0], &mostRight[0], &points[x]);//not sure if im doing it 
         //add to left
-        if(lineValue + 0.0000001 < 0){
+        if(lineValue +  0.00000001 < 0){
             addPoints(leftPoints, points[x].x, points[x].y);
         }//end if
-        if(lineValue - 0.0000001 > 0){
+        if(lineValue - 0.00000001 > 0){
             addPoints(rightPoints, points[x].x, points[x].y);
         }//end if
     }//end for
 
     //add and recurse
     addPoints(hullPoints, mostLeft[0].x, mostLeft[0].y);
+    Points* p = initPoints();
+    p[0].x = mostLeft[0].x;
+    p[0].y = mostLeft[0].y;
     addPoints(hullPoints, mostRight[0].x, mostRight[0].y);
-    findHull(leftPoints, mostLeft, mostRight, hullPoints);
-    findHull(rightPoints, mostRight, mostLeft, hullPoints);
+    Points* q = initPoints();
+    q[0].x = mostRight[0].x;
+    q[0].y = mostRight[0].y;
+
+    findHull(leftPoints, p, q, hullPoints);
+    findHull(rightPoints, q, p, hullPoints);
 
     //count the number of points of the convex hull
     for(int x=0; x<hullPoints[0].size;x++){
         debug("Fount points: %.1lf %.1lf\n", hullPoints[x].x, hullPoints[x].y);
         //debug("WENT TO NUMBER OF POINTS FOR LOOP\n");
         numberOfPoints++;
-    }//end 7for
+    }//end for
 
     //free and return the number of points
     return numberOfPoints;
@@ -361,10 +370,10 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
 
 void findHull(Points* pointArray, Points* p, Points* q, Points* hullPoints){
     //dec vars
+    double maxHeight = 0;
     Points* farthest = initPoints();
     Points* upper = initPoints();
     Points* lower = initPoints();
-    int maxHeight = 0;
     if(pointArray[0].size == 0){
         return;
     }//end if
@@ -372,7 +381,7 @@ void findHull(Points* pointArray, Points* p, Points* q, Points* hullPoints){
     double num1 = (q[0].x - p[0].x) * (q[0].x - p[0].x);
     double num2 = (q[0].y - p[0].y) * (q[0].y - p[0].y);
     double distance = sqrt( num1 + num2 );
-    //saerch for the point that extreme from the segment line
+    //saerch for the point that extreme from the segment line !!!!!!!!!!
     for(int x=0; x<pointArray[0].size;x++){
         double absolute = fabs(p[0].x * q[0].y + pointArray[x].x * p[0].y + q[0].x * pointArray[x].y - pointArray[x].x * q[0].y - q[0].x * p[0].y - p[0].x * pointArray[x].y);
         double height = absolute / distance;
@@ -391,11 +400,11 @@ void findHull(Points* pointArray, Points* p, Points* q, Points* hullPoints){
             ((q[0].y - farthest[0].y) * (p[0].x - farthest[0].x) + (farthest[0].x - q[0].x) * (p[0].y - farthest[0].y));
         b = ((farthest[0].y - p[0].y) * (pointArray[x].x - farthest[0].x) + (p[0].x - farthest[0].x) * (pointArray[x].y - farthest[0].y)) /
             ((q[0].y - farthest[0].y) * (p[0].x - farthest[0].x) + (farthest[0].x - q[0].x) * (p[0].y - farthest[0].y));
-        c = 1 - a - b;
+        c = 1.0f - (a + b);
         
         //check if it is outside of the triangle
-        if((a + 0.0000001 > 0 && b + 0.0000001 > 0 && c + 0.0000001 > 0) == false){
-            lineValue = whichSideOfLine(p, farthest, &pointArray[x]);
+        if(!(a + 0.00001 > 0 && b + 0.00001 > 0 && c + 0.00001 > 0)){
+            lineValue = whichSideOfLine(&p[0], &farthest[0], &pointArray[x]);
             if (lineValue - 0.0000001 > 0) {
                 addPoints(upper, pointArray[x].x, pointArray[x].y);
             }//end if
