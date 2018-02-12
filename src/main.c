@@ -12,16 +12,15 @@
 #include <string.h>
 #include <ctype.h>
 #include <malloc.h>
-#include <math.h>
 #include <sys/time.h>
 #include <time.h>
 #include <limits.h>
 #include <assert.h>
+#include <math.h>
 //macros
 #define DEBUG true
 #define debug if(DEBUG)printf
 #define d debug("CHECK\n");
-#define GET_ARRAY_SIZE( array ) ( sizeof( array ) / sizeof( *array )) //or array[0] instead of *array
 
 /***********************************************************
  * Headers
@@ -31,6 +30,7 @@
 typedef struct points{
     double x;
     double y;
+    int size;
 }Points;
 //struct that act as instance vars
 typedef struct instanceVars{
@@ -56,6 +56,7 @@ int merge(int array[], int tempArray[], int left, int middle, int right);
 double whichSideOfLine(Points* point1, Points* point2, Points* pointSubject);
 int bruteForceConvexHull(Points* array, int arraySize);
 //divide and conquer convex hull
+Points* initPoints();
 void addPoints(Points* array, double x, double y);
 int divideAndConquerConvexHull(Points* points, int arraySize);
 void findHull(Points* pointArray, Points* p, Points* q, Points* hullPoints);
@@ -285,29 +286,35 @@ int bruteForceConvexHull(Points* array, int arraySize){
     return numberOfPoints;
 }//end func
 
+Points* initPoints(){
+    Points* newPoint = malloc(sizeof(Points)*60000);
+    newPoint->x = -1;
+    newPoint->y = -1;
+    newPoint->size = 0;
+    return newPoint;
+}//end func
+
 void addPoints(Points* array, double x, double y){
-    int arraySize = GET_ARRAY_SIZE(array);
-    array = realloc(array, sizeof(Points)*(arraySize+1));
+    int arraySize = array[0].size;
+    //array = realloc(array, sizeof(Points)*(arraySize+9));
     array[arraySize].x = x;
     array[arraySize].y = y;
-    debug("debug addPoints: %lf, %lf\n", array[arraySize].x, array[arraySize].y);
+    array[0].size++;
+    //debug("arraySize: %d\n",arraySize);
+    //debug("debug addPoints: %lf, %lf\n", array[arraySize].x, array[arraySize].y);
 }//end func
 
 int divideAndConquerConvexHull(Points* points, int arraySize){
     //dec vars
     int numberOfPoints = 0;
     //going to be a array
-    Points* hullPoints = malloc(sizeof(Points));
-    Points* leftPoints = malloc(sizeof(Points));
-    Points* rightPoints = malloc(sizeof(Points));
+    Points* hullPoints = initPoints();
+    Points* leftPoints = initPoints();
+    Points* rightPoints = initPoints();
     //need only one
-    Points* mostLeft = malloc(sizeof(Points));
-    Points* mostRight = malloc(sizeof(Points));
+    Points* mostLeft = initPoints();
+    Points* mostRight = initPoints();
     //init the most left and right to 0
-    mostLeft->x = 0;
-    mostLeft->y = 0;
-    mostRight->x = 0;
-    mostRight->y = 0;
     mostLeft->x = points[0].x;
     mostRight->x = points[0].x;
 
@@ -342,31 +349,31 @@ int divideAndConquerConvexHull(Points* points, int arraySize){
     findHull(rightPoints, mostRight, mostLeft, hullPoints);
 
     //count the number of points of the convex hull
-    for(int x=0; x<GET_ARRAY_SIZE(hullPoints);x++){
-        debug("WENT TO NUMBER OF POINTS FOR LOOP\n");
+    for(int x=0; x<hullPoints->size;x++){
+        debug("Fount points: %lf %lf\n", hullPoints[x].x, hullPoints[x].y);
+        //debug("WENT TO NUMBER OF POINTS FOR LOOP\n");
         numberOfPoints++;
-    }//end for
+    }//end 7for
 
     //free and return the number of points
-    free(hullPoints);
-    free(leftPoints);
-    free(rightPoints);
     return numberOfPoints;
 }//end func
 
 void findHull(Points* pointArray, Points* p, Points* q, Points* hullPoints){
     //dec vars
-    Points* farthest = malloc(sizeof(Points));
-    Points* upper = malloc(sizeof(Points));
-    Points* lower = malloc(sizeof(Points));
+    Points* farthest = initPoints();
+    Points* upper = initPoints();
+    Points* lower = initPoints();
     int maxHeight = 0;
-    if(GET_ARRAY_SIZE(pointArray) == 0){
+    if(pointArray->size == 0){
         return;
     }//end if
     
-    double distance = sqrt((q->x - p->x) * (q->x - p->x) + (q->y - p->y) * (q->y - p->y));
+    double num1 = (q->x - p->x) * (q->x - p->x);
+    double num2 = (q->y - p->y) * (q->y - p->y);
+    double distance = sqrt( num1 + num2 );
     //saerch for the point that extreme from the segment line
-    for(int x=0; x<GET_ARRAY_SIZE(pointArray);x++){
+    for(int x=0; x<pointArray[0].size;x++){
         double absolute = fabs(p->x * q->y + pointArray[x].x * p->y + q->x * pointArray[x].y - pointArray[x].x * q->y - q->x * p->y - p->x * pointArray[x].y);
         double height = absolute / distance;
         if(height > maxHeight){
@@ -379,7 +386,7 @@ void findHull(Points* pointArray, Points* p, Points* q, Points* hullPoints){
     //append convex hull with the point that is the farthest
     addPoints(hullPoints, farthest->x, farthest->y);
     double a, b, c, lineValue;
-    for(int x=0; x<GET_ARRAY_SIZE(pointArray);x++){
+    for(int x=0; x<pointArray[0].size;x++){
         a = ((q->y - farthest->y) * (pointArray[x].x - farthest->x) + (farthest->x - q->x) * (pointArray[x].y - farthest->y)) /
             ((q->y - farthest->y) * (p->x - farthest->x) + (farthest->x - q->x) * (p->y - farthest->y));
         b = ((farthest->y - p->y) * (pointArray[x].x - farthest->x) + (p->x - farthest->x) * (pointArray[x].y - farthest->y)) /

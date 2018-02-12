@@ -11,7 +11,7 @@ ifeq ($(UNAME), Darwin)
 endif
 
 program:  
-	$(CC)  $(CFLAGS) src/*.c  -o bin/run
+	$(CC)  $(CFLAGS) src/*.c  -o bin/run -lm
 
 run:
 	./bin/run
@@ -20,4 +20,4 @@ valgrind:
 	valgrind -v --leak-check=full ./bin/run
 
 clean:
-	rm bin/*
+	rm bin/run
