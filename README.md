@@ -16,6 +16,6 @@ and determining the eﬃciency class.
 ### How to run the program
 
 1) go to terminal and go to the program folder
-2) type "make" to compile
-3) type "make run" to run the program
-4) if "make run" doesn't work, type "./bin/run"
+2) type `make` to compile
+3) type `make run` to run the program
+4) if `make run` doesn't work, type `./bin/run`
