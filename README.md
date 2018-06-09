@@ -5,8 +5,6 @@ Program to find points of creating edges of outer perimeter also known as Convex
 ### About the program
 
 Name: Vicky Mohammad
-ID: 0895381
-Date: February 10, 2018
 
 A program that finds the total number of inversions in an array,
 as well as analyzing the number of executions of the basic operation, 
