@@ -1,14 +1,12 @@
 # Convex Hull
 
-Program to find points of creating edges of outer perimeter also known as Convex Hull
+A program to find points for creating the edges of outer perimeter also known as Convex Hull
 
 ### About the program
 
-Name: Vicky Mohammad
-
-A program that finds the total number of inversions in an array,
+A program also finds the total number of inversions in an array,
 as well as analyzing the number of executions of the basic operation, 
-fining the total number of hull points of convex hull,
+finding the total number of hull points of convex hull,
 and determining the eﬃciency class.
 
 ### How to run the program
