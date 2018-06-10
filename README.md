@@ -4,7 +4,7 @@ A program to find points for creating the edges of outer perimeter also known as
 
 ### About the program
 
-A program also finds the total number of inversions in an array,
+The program also finds the total number of inversions in an array,
 as well as analyzing the number of executions of the basic operation, 
 finding the total number of hull points of convex hull,
 and determining the eﬃciency class.
