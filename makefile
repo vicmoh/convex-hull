@@ -21,3 +21,8 @@ valgrind:
 
 clean:
 	rm bin/run
+
+git:
+	git add -A
+	git commit -m "[AUTO]"
+	git push

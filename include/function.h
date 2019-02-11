@@ -8,13 +8,10 @@
 #define FUNCTION_H
 /*import libraries*/
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <stdbool.h>
-#include <string.h>
 #include <ctype.h>
-#include <malloc.h>
 #include <sys/time.h>
 #include <time.h>
 #include <limits.h>
