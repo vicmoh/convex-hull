@@ -12,6 +12,7 @@ endif
 
 program:  
 	$(CC)  $(CFLAGS) src/*.c  -o bin/run -lm
+	make run
 
 run:
 	./bin/run
