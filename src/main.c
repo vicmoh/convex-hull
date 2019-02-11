@@ -184,7 +184,7 @@ int main(int argc, char** argv){
         printf("3: Brute force convex hull\n");
         printf("4: Divide and conquer convexhull\n");
         printf("5: Compare execution times of 1 and 2\n");
-        printf("6: compare execution times of 3 and 4\n");
+        printf("6: Compare execution times of 3 and 4\n");
         printf("7: Exit\n");
         printf("Enter the menu:\n");
         menu = userInput(menu);
